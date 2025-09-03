@@ -1,0 +1,135 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Inventario - Registro{% endblock title %}
+
+{% block content %}
+<div class="pc-container">
+  <div class="pc-content">
+
+    <!-- [ Breadcrumb ] -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Registro de Compra</h4>
+            <div class="text-end">
+                <span class="badge bg-light text-dark">
+                <i class="fas fa-clock me-1"></i>
+                <span id="reloj-fecha"></span> - <span id="reloj-hora"></span>
+                </span>
+            </div>
+            </div>
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url "index" %}">Inicio</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0)">Compras</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Nueva Compra</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- [ Formulario de Registro ] -->
+    <form method="post" class="mt-4">
+      {% csrf_token %}
+      <div class="row">
+
+        <!-- Producto -->
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">Datos del Producto</h5>
+            </div>
+            <div class="card-body">
+              {{ producto_form.as_p }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Compra -->
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">Datos de la Compra</h5>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                {{ compra_form.fecha.label_tag }}
+                {{ compra_form.fecha }}
+              </div>
+              <div class="form-group">
+                {{ compra_form.hora.label_tag }}
+                {{ compra_form.hora }}
+              </div>
+              <div class="form-check mt-3">
+                {{ compra_form.incluir_proveedor }}
+                <label class="form-check-label" for="id_incluir_proveedor">¿Agregar proveedor?</label>
+              </div>
+              <div class="form-group mt-2" id="proveedor-field">
+                {{ compra_form.proveedor.label_tag }}
+                {{ compra_form.proveedor }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-end mt-4">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save me-2"></i>Guardar Compra
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  function actualizarReloj() {
+    const ahora = new Date();
+
+    const dia = String(ahora.getDate()).padStart(2, '0');
+    const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+    const anio = ahora.getFullYear();
+
+    const horas = String(ahora.getHours()).padStart(2, '0');
+    const minutos = String(ahora.getMinutes()).padStart(2, '0');
+    const segundos = String(ahora.getSeconds()).padStart(2, '0');
+
+    const fechaStr = `${dia}/${mes}/${anio}`;
+    const horaStr = `${horas}:${minutos}:${segundos}`;
+
+    document.getElementById('reloj-fecha').textContent = fechaStr;
+    document.getElementById('reloj-hora').textContent = horaStr;
+  }
+
+  setInterval(actualizarReloj, 1000);
+  actualizarReloj();  // Ejecutar inmediatamente al cargar
+</script>
+
+<!-- Script para mostrar/ocultar proveedor -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.querySelector('#id_incluir_proveedor');
+    const proveedorDiv = document.querySelector('#proveedor-field');
+
+    function toggleProveedor() {
+      proveedorDiv.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    if (checkbox) {
+      checkbox.addEventListener('change', toggleProveedor);
+      toggleProveedor(); // Inicializar
+    }
+  });
+</script>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static "assets/js/plugins/apexcharts.min.js" %}"></script>
+<script src="{% static "assets/js/plugins/jsvectormap.min.js" %}"></script>
+<script src="{% static "assets/js/plugins/world.js" %}"></script>
+<script src="{% static "assets/js/pages/dashboard-default.js" %}"></script>
+{% endblock extra_js %}

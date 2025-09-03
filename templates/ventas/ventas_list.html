@@ -1,0 +1,301 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Listado de Ventas{% endblock title %}
+
+{% block content %}
+<div class="pc-container">
+  <div class="pc-content">
+
+    <!-- Breadcrumb -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="mb-0">Home</h5>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="container py-4">
+      <h2 class="mb-4">Listado de Ventas</h2>
+
+      <table class="table table-bordered table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Usuario</th>
+            <th>Método Pago</th>
+            <th>Total</th>
+            <th>Ganancia</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for venta in ventas %}
+          <tr>
+            <td>{{ venta.id }}</td>
+            <td>{{ venta.fecha }} {{ venta.hora|time:"H:i" }}</td>
+            <td>{{ venta.cliente }}</td>
+            <td>{{ venta.usuario }}</td>
+            <td>{{ venta.get_metodo_pago_display }}</td>
+            <td>Bs. {{ venta.total|floatformat:2 }}</td>
+            <td>Bs. {{ venta.ganancia_total|floatformat:2 }}</td>
+            <td>
+              <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detalleVentaModal{{ venta.id }}">
+                Ver Detalles
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- MODALES -->
+      {% for venta in ventas %}
+      <div class="modal fade" id="detalleVentaModal{{ venta.id }}" tabindex="-1" aria-labelledby="modalLabel{{ venta.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+          <div class="modal-content" id="modal-content-{{ venta.id }}">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalLabel{{ venta.id }}">Detalle de Venta #{{ venta.id }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+              <p><strong>Fecha:</strong> {{ venta.fecha }} {{ venta.hora|time:"H:i" }}</p>
+              <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+              <p><strong>Usuario:</strong> {{ venta.usuario }}</p>
+              <p><strong>Método de Pago:</strong> {{ venta.get_metodo_pago_display }}</p>
+
+              <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Descuento</th>
+                    <th>Subtotal</th>
+                    <th>Ganancia Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for d in venta.detalles.all %}
+                  <tr>
+                    <td>{{ d.producto.nombre }}</td>
+                    <td>{{ d.cantidad }}</td>
+                    <td>Bs. {{ d.precio_unitario|floatformat:2 }}</td>
+                    <td>Bs. {{ d.descuento|floatformat:2 }}</td>
+                    <td>Bs. {{ d.subtotal|floatformat:2 }}</td>
+                    <td>Bs. {{ d.ganancia_total|floatformat:2 }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <p class="text-end mt-3"><strong>Total: Bs. {{ venta.total|floatformat:2 }}</strong></p>
+              <p class="text-end"><strong>Ganancia Total: Bs. {{ venta.ganancia_total|floatformat:2 }}</strong></p>
+            </div>
+            <div class="modal-footer no-print">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              <button type="button" class="btn btn-primary" onclick="imprimirModal('modal-content-{{ venta.id }}')">🖨️ Imprimir</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<!-- Estilos para impresión -->
+<style>
+  @page {
+    size: Letter;
+    margin: 2cm;
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+
+    body {
+      font-size: 12pt;
+      color: #000;
+    }
+
+    .print-header, .print-footer {
+      text-align: center;
+    }
+
+    .print-header img {
+      max-width: 150px;
+      margin-bottom: 10px;
+    }
+
+    .print-header h3 {
+      margin: 0;
+      font-size: 18pt;
+    }
+
+    .print-header p {
+      margin: 0;
+      font-size: 10pt;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+    }
+
+    table, th, td {
+      border: 1px solid #000;
+    }
+
+    th, td {
+      padding: 6px;
+      text-align: left;
+    }
+
+    .print-footer {
+      margin-top: 40px;
+      font-style: italic;
+      font-size: 10pt;
+    }
+
+    hr {
+      margin: 10px 0;
+    }
+  }
+</style>
+
+
+<!-- Script de impresión con QR -->
+<script>
+function imprimirModal(modalId) {
+  const contenido = document.getElementById(modalId).innerHTML;
+
+  // Extraer ID de venta desde el modalId (ej: modal-content-12 → 12)
+  const ventaId = modalId.split('-').pop();
+
+  // Ruta del logo
+  const logoURL = `${window.location.origin}/static/img/logo.png`;
+
+  // Generador QR gratuito (puedes usar otro si tienes uno propio)
+  const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://miempresa.com/ventas/${ventaId}`;
+
+  const ventana = window.open('', '', 'width=900,height=1000');
+  ventana.document.write(`
+    <html>
+      <head>
+        <title>Imprimir Venta</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+          @page {
+            size: Letter;
+            margin: 2cm;
+          }
+
+          @media print {
+            .no-print {
+              display: none !important;
+            }
+
+            body {
+              font-size: 12pt;
+              color: #000;
+              margin: 0;
+            }
+
+            .print-header, .print-footer {
+              text-align: center;
+            }
+
+            .print-header img {
+              max-width: 150px;
+              margin-bottom: 10px;
+            }
+
+            .print-header h3 {
+              margin: 0;
+              font-size: 18pt;
+            }
+
+            .print-header p {
+              margin: 0;
+              font-size: 10pt;
+            }
+
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 1em;
+            }
+
+            table, th, td {
+              border: 1px solid #000;
+            }
+
+            th, td {
+              padding: 6px;
+              text-align: left;
+            }
+
+            .print-footer {
+              margin-top: 40px;
+              font-style: italic;
+              font-size: 10pt;
+            }
+
+            hr {
+              margin: 10px 0;
+            }
+          }
+        </style>
+      </head>
+      <body class="p-4">
+        <div class="print-header">
+          <img src="${logoURL}" alt="Logo de la empresa">
+          <h3>Mi Empresa S.R.L.</h3>
+          <p>Dirección: Av. Ejemplo 123, Ciudad</p>
+          <p>Teléfono: 555-123456 | RIF: J-12345678-9</p>
+          <hr>
+        </div>
+
+        ${contenido}
+
+        <div class="print-footer">
+          <p>Gracias por su compra. ¡Vuelva pronto!</p>
+          <div class="mt-3">
+            <p><strong>Escanee este código para verificar la venta:</strong></p>
+            <img src="${qrURL}" alt="Código QR de la venta">
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            window.print();
+            window.onafterprint = function () { window.close(); }
+          }
+        <\/script>
+      </body>
+    </html>
+  `);
+  ventana.document.close();
+}
+</script>
+
+{% endblock content %}

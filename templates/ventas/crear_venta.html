@@ -1,0 +1,212 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Registrar Venta{% endblock title %}
+
+{% block content %}
+<div class="pc-container">
+    <div class="pc-content">
+      <!-- [ breadcrumb ] start -->
+      <div class="page-header">
+        <div class="page-block">
+          <div class="row align-items-center">
+            <div class="col-md-12">
+              <div class="page-header-title">
+                <h5 class="mb-0">Home</h5>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <ul class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+                <li class="breadcrumb-item" aria-current="page">Venta</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="container py-4">
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <h1 class="mb-4">Registrar Venta</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ venta_form.as_p }}
+    {{ formset.management_form }}
+
+    <table class="table table-bordered align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Descuento</th>
+          <th>Subtotal</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="formset-body">
+        {% for form in formset %}
+        <tr class="form-row align-middle">
+          <td>
+            <select name="form-{{ forloop.counter0 }}-producto" class="form-select producto">
+              <option value="" selected disabled>Seleccione un producto</option>
+              {% for p in productos %}
+              <option value="{{ p.pk }}" data-precio="{{ p.precio_venta }}" data-stock="{{ p.cantidad }}">
+                {{ p.nombre }}
+              </option>
+              {% endfor %}
+            </select>
+          </td>
+          <td>
+            <input type="number" name="form-{{ forloop.counter0 }}-cantidad" class="form-control cantidad" min="1">
+            <div class="stock-info text-muted" style="font-size: 0.8em;"></div>
+          </td>
+          <td>
+            <input type="number" name="form-{{ forloop.counter0 }}-descuento" class="form-control descuento" value=0>
+          </td>
+          <td>
+            <input type="text" class="form-control subtotal" readonly>
+          </td>
+          <td>
+            <button type="button" class="btn btn-outline-danger btn-sm remove-form">🗑️</button>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <button type="button" id="add-form" class="btn btn-success my-3">➕ Agregar Producto</button>
+
+    <p><strong>Total: Bs. <span id="venta-total">0.00</span></strong></p>
+
+    <button type="submit" class="btn btn-primary">Guardar Venta</button>
+  </form>
+
+</div>
+
+</div>
+  </div>
+
+<!-- JS Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    let totalForms = $('#id_form-TOTAL_FORMS');
+    let formIndex = parseInt(totalForms.val());
+
+    function actualizarTotales() {
+        let totalVenta = 0;
+
+        $('#formset-body .form-row').each(function () {
+            let fila = $(this);
+            let producto = fila.find('select option:selected');
+            let precio = parseFloat(producto.data('precio')) || 0;
+            let cantidad = parseFloat(fila.find('.cantidad').val()) || 0;
+            let descuento = parseFloat(fila.find('.descuento').val(0)) || 0;
+
+            let subtotal = (precio * cantidad) - descuento;
+            if (subtotal < 0) subtotal = 0;
+            fila.find('.subtotal').val(subtotal.toFixed(2));
+            totalVenta += subtotal;
+        });
+
+        $('#venta-total').text(totalVenta.toFixed(2));
+        toggleEliminar();
+    }
+
+    function toggleEliminar() {
+        let rows = $('#formset-body .form-row');
+        if (rows.length <= 1) {
+            rows.find('.remove-form').hide();
+        } else {
+            rows.find('.remove-form').show();
+        }
+    }
+
+    $('#add-form').click(function () {
+        let $lastFormRow = $('#formset-body .form-row:last');
+        let $newFormRow = $lastFormRow.clone(false);
+
+        $newFormRow.find('input, select').each(function () {
+            let name = $(this).attr('name');
+            if (!name) return;
+
+            let newName = name.replace(/-(\d+)-/, `-${formIndex}-`);
+            let newId = 'id_' + newName;
+
+            $(this).attr({
+                'name': newName,
+                'id': newId
+            });
+
+            if ($(this).is('select')) {
+                $(this).val('');
+            } else if (!$(this).hasClass('subtotal')) {
+                $(this).val('');
+            } else {
+                $(this).val('0.00');
+            }
+        });
+
+        $newFormRow.find('.stock-info').text('');
+        $newFormRow.appendTo('#formset-body');
+        formIndex++;
+        totalForms.val(formIndex);
+        actualizarTotales();
+    });
+
+    $('#formset-body').on('click', '.remove-form', function () {
+        if ($('#formset-body .form-row').length > 1) {
+            $(this).closest('.form-row').remove();
+            formIndex--;
+            totalForms.val(formIndex);
+            actualizarTotales();
+        }
+    });
+
+    $('#formset-body').on('input change', '.cantidad, .descuento, select', function () {
+        actualizarTotales();
+    });
+
+    $('#formset-body').on('change', 'select.producto', function () {
+        const fila = $(this).closest('.form-row');
+        const producto = $(this).find('option:selected');
+        const stock = parseInt(producto.data('stock')) || 0;
+
+        fila.find('.stock-info').text('Disponible: ' + stock);
+        const cantidadInput = fila.find('.cantidad');
+        cantidadInput.attr('max', stock);
+
+        let cantidadVal = parseInt(cantidadInput.val()) || 0;
+        if (cantidadVal > stock) {
+            cantidadInput.val(stock);
+        }
+    });
+
+    actualizarTotales();
+});
+</script>
+
+<script>
+  // Oculta automáticamente los mensajes después de 4 segundos
+  setTimeout(function () {
+    let alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function (alert) {
+      alert.classList.remove('show');
+      alert.classList.add('fade');
+      setTimeout(() => {
+        alert.style.display = 'none';
+      }, 500);
+    });
+  }, 4000);
+</script>
+{% endblock content %}

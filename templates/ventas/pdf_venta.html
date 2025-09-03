@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: "Helvetica", sans-serif; color: #333; }
+    h1 { color: #1976d2; }
+    .empresa {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .empresa h2 {
+      color: #1976d2;
+    }
+    .tabla, th, td {
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+      padding: 8px;
+    }
+    .tabla th {
+      background-color: #f1f1f1;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="empresa">
+    <h2>TU EMPRESA S.A.C.</h2>
+    <p>www.tuempresa.com | contacto@tuempresa.com</p>
+    <p>Dirección: Calle Ficticia 123 - Lima</p>
+  </div>
+
+  <h3>Factura de Venta #{{ venta.id }}</h3>
+  <p><strong>Fecha:</strong> {{ venta.fecha }} {{ venta.hora|time:"H:i" }}</p>
+  <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+  <p><strong>Usuario:</strong> {{ venta.usuario }}</p>
+  <p><strong>Método de Pago:</strong> {{ venta.get_metodo_pago_display }}</p>
+
+  <table class="tabla" width="100%">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+        <th>Descuento</th>
+        <th>Subtotal</th>
+        <th>Ganancia</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in venta.detalles.all %}
+      <tr>
+        <td>{{ d.producto.nombre }}</td>
+        <td>{{ d.cantidad }}</td>
+        <td>${{ d.precio_unitario|floatformat:2 }}</td>
+        <td>${{ d.descuento|floatformat:2 }}</td>
+        <td>${{ d.subtotal|floatformat:2 }}</td>
+        <td>${{ d.ganancia_total|floatformat:2 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p style="text-align: right; margin-top: 20px;"><strong>Total: ${{ venta.total|floatformat:2 }}</strong></p>
+  <p style="text-align: right;"><strong>Ganancia Total: ${{ venta.ganancia_total|floatformat:2 }}</strong></p>
+
+  <div class="footer">
+    <p>Gracias por su compra</p>
+  </div>
+</body>
+</html>

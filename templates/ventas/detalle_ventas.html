@@ -1,0 +1,30 @@
+<h2>Detalle de Venta</h2>
+<p>Cliente: {{ venta.cliente }}</p>
+<p>Método de pago: {{ venta.metodo_pago }}</p>
+<p>Fecha: {{ venta.fecha }}</p>
+<p>Hora: {{ venta.hora }}</p>
+<p>Total: ${{ venta.monto }}</p>
+
+<h4>Productos vendidos:</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Descuento</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for detalle in venta.detalleventa_set.all %}
+        <tr>
+            <td>{{ detalle.producto.nombre }}</td>
+            <td>{{ detalle.cantidad }}</td>
+            <td>{{ detalle.descuento }}</td>
+            <td>{{ detalle.precio_unitario }}</td>
+            <td>{{ detalle.subtotal }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

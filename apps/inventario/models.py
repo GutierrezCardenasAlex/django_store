@@ -1,35 +1,121 @@
 from django.db import models
-
-# Create your models here.
 from django.contrib.auth.models import User
 
-class Producto(models.Model):
+
+class Cliente(models.Model):
     nombre = models.CharField(max_length=100)
-    descripcion = models.TextField(blank=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.IntegerField()
-    stock_minimo = models.IntegerField(default=0)
+    apellido = models.CharField(max_length=100, blank=True, null=True)
+    nit_ci = models.CharField(max_length=20, blank=True, null=True)
+    direccion = models.CharField(max_length=255, blank=True, null=True)
+    telefono = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.nombre} {self.apellido or ''}".strip()
+
+
+class Proveedor(models.Model):
+    nombre = models.CharField(max_length=100)
+    contacto = models.CharField(max_length=100, blank=True, null=True)
+    direccion = models.CharField(max_length=255, blank=True, null=True)
+    telefono = models.CharField(max_length=20, blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.nombre
 
-class Entrada(models.Model):
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=100)
+    descripcion = models.TextField(blank=True, null=True)
+    precio_venta = models.DecimalField(max_digits=10, decimal_places=2)
+    precio_compra = models.DecimalField(max_digits=10, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    categoria = models.CharField(max_length=50, blank=True, null=True)
+    unidad_medida = models.CharField(max_length=20, blank=True, null=True)
+
+    def __str__(self):
+        return self.nombre
+
+
+class Compra(models.Model):
+    fecha = models.DateField()
+    hora = models.TimeField()
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Compra #{self.id} - {self.fecha}"
+
+
+class DetalleCompra(models.Model):
+    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name="detalles")
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
-    fecha = models.DateTimeField(auto_now_add=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    precio = models.DecimalField(max_digits=10, decimal_places=2)
 
-class Salida(models.Model):
-    fecha = models.DateTimeField(auto_now_add=True)
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    def __str__(self):
+        return f"{self.producto.nombre} x {self.cantidad}"
 
-class DetalleSalida(models.Model):
-    salida = models.ForeignKey(Salida, on_delete=models.CASCADE, related_name='detalles')
+
+class Venta(models.Model):
+    METODOS_PAGO = [
+        ('efectivo', 'Efectivo'),
+        ('tarjeta', 'Tarjeta'),
+        ('transferencia', 'Transferencia'),
+    ]
+    fecha = models.DateField()
+    hora = models.TimeField()
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    metodo_pago = models.CharField(max_length=20, choices=METODOS_PAGO, default='efectivo')
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f"Venta #{self.id} - {self.fecha}"
+
+
+class DetalleVenta(models.Model):
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE, related_name="detalles")
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    descuento = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
 
+    @property
+    def subtotal(self):
+        return (self.precio_unitario - self.descuento) * self.cantidad
+
+    @property
+    def ganancia_unitaria(self):
+        return self.precio_unitario - self.producto.precio_compra
+
+    @property
+    def ganancia_total(self):
+        return self.ganancia_unitaria * self.cantidad
+
+    def __str__(self):
+        return f"{self.producto.nombre} x {self.cantidad}"
+
+
 class Factura(models.Model):
-    salida = models.OneToOneField(Salida, on_delete=models.CASCADE)
-    fecha = models.DateTimeField(auto_now_add=True)
+    nro_factura = models.IntegerField(unique=True)
+    fecha = models.DateField()
+    hora = models.TimeField()
     total = models.DecimalField(max_digits=10, decimal_places=2)
+    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True, blank=True)
+    venta = models.OneToOneField(Venta, on_delete=models.CASCADE, related_name='factura')
+
+    def __str__(self):
+        return f"Factura #{self.nro_factura}"
+
+
+class Notificacion(models.Model):
+    producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
+    mensaje = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True)
+    leida = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Notificación para {self.producto.nombre} - {self.fecha.strftime('%Y-%m-%d %H:%M:%S')}"

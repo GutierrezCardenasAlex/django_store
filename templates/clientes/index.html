@@ -19,28 +19,25 @@
             <div class="col-md-12">
               <ul class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+                <li class="breadcrumb-item"><a href="javascript: void(0)">Clientes</a></li>
                 <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
               </ul>
             </div>
           </div>
         </div>
       </div>
-    <!------[tablas productos]-->
+    <!------[tablas clientes]-->
     <!-- Botón para abrir el modal -->
 <div class="container py-4">
 
   <!-- Encabezado -->
   <div class="row align-items-center mb-4">
     <div class="col-md-6 col-12 mb-2 mb-md-0">
-      <h2 class="text-center text-md-start">Productos</h2>
+      <h2 class="text-center text-md-start">clientes</h2>
     </div>
     <div class="col-md-6 col-12 text-center text-md-end">
-      <a href="{% url 'crear_compra' %}" class="btn btn-success">
-        <i class="bi bi-plus-circle me-1"></i> Compra Producto
-      </a>
-      <a href="{% url 'crear_venta' %}" class="btn btn-danger">
-        <i class="bi bi-plus-circle me-1"></i> Venta Producto
+        <a href="{% url 'register_clientes' %}" class="btn btn-success"> Nuevo cliente</a>
+        <i class="bi bi-plus-circle me-1"></i>
       </a>
     </div>
   </div>
@@ -51,39 +48,34 @@
       <thead class="table-primary text-center">
         <tr>
           <th>#</th>
-          <th>Nombre</th>
-          <th>Categoría</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Acciones</th>
+          <th>nombre</th>
+          <th>apellido</th>
+          <th>nit_ci</th>
+          <th>direccion</th>
+          <th>telefono</th>
         </tr>
       </thead>
       <tbody class="text-center">
-        {% for producto in productos %}
+        {% for cliente in clientes %}
         <tr>
           <td>{{ forloop.counter }}</td>
-          <td class="text-wrap">{{ producto.nombre }}</td>
-          <td class="text-wrap">{{ producto.categoria }}</td>
-          <td><span class="badge">Bs. {{ producto.precio_venta }}</span></td>
-          <td>
-            {% if producto.cantidad > 10 %}
-              <span class="badge bg-info">{{ producto.cantidad }}</span>
-            {% elif producto.cantidad > 0 %}
-              <span class="badge bg-warning text-dark">{{ producto.cantidad }}</span>
-            {% else %}
-              <span class="badge bg-danger">Agotado</span>
-            {% endif %}
-          </td>
+          <td class="text-wrap">{{ cliente.nombre }}</td>
+          <td class="text-wrap">{{ cliente.apellido }}</td>
+            <td class="text-wrap">{{ cliente.nit_ci }}</td>
+            <td class="text-wrap">{{ cliente.direccion }}</td>
+            <td class="text-wrap">{{ cliente.telefono }}</td>
           <td>
             <div class="d-flex justify-content-center flex-wrap gap-1">
               <!-- Editar -->
-              <a href="{% url 'editar_producto' producto.id %}" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
+               <!--   -->
+              <a  href="{% url 'editar_cliente' cliente.id %}" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
                 <i class="bi bi-pencil-square"></i><span class="d-none d-sm-inline">Editar</span>
               </a>
 
               <!-- Eliminar -->
-              <a href="{% url 'eliminar_producto' producto.id %}" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
-                 onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+               <!--  -->
+              <a  href="{% url 'eliminar_cliente' cliente.id %}" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
+                 onclick="return confirm('¿Estás seguro de que deseas eliminar este cliente?');">
                 <i class="bi bi-trash"></i><span class="d-none d-sm-inline">Eliminar</span>
               </a>
             </div>
@@ -91,7 +83,7 @@
         </tr>
         {% empty %}
         <tr>
-          <td colspan="6" class="text-muted text-center">No hay productos registrados.</td>
+          <td colspan="6" class="text-muted text-center">No hay clientes registrados.</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -109,28 +101,28 @@
       
       <!-- Encabezado -->
       <div class="modal-header">
-        <h5 class="modal-title" id="registroModalLabel">Registrar Producto</h5>
+        <h5 class="modal-title" id="registroModalLabel">Registrar cliente</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
       
       <!-- Cuerpo con formulario -->
       <div class="modal-body">
-        <form id="formularioProducto">
+        <form id="formulariocliente">
           <div class="mb-3">
-            <label for="nombreProducto" class="form-label">Nombre del producto</label>
-            <input type="text" class="form-control" id="nombreProducto" required>
+            <label for="nombrecliente" class="form-label">Nombre del cliente</label>
+            <input type="text" class="form-control" id="nombrecliente" required>
           </div>
           <div class="mb-3">
-            <label for="categoriaProducto" class="form-label">Categoría</label>
-            <input type="text" class="form-control" id="categoriaProducto" required>
+            <label for="categoriacliente" class="form-label">Categoría</label>
+            <input type="text" class="form-control" id="categoriacliente" required>
           </div>
           <div class="mb-3">
-            <label for="precioProducto" class="form-label">Precio</label>
-            <input type="number" class="form-control" id="precioProducto" required>
+            <label for="preciocliente" class="form-label">Precio</label>
+            <input type="number" class="form-control" id="preciocliente" required>
           </div>
           <div class="mb-3">
-            <label for="stockProducto" class="form-label">Stock</label>
-            <input type="number" class="form-control" id="stockProducto" required>
+            <label for="stockcliente" class="form-label">Stock</label>
+            <input type="number" class="form-control" id="stockcliente" required>
           </div>
         </form>
       </div>
@@ -138,7 +130,7 @@
       <!-- Pie con botones -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" form="formularioProducto" class="btn btn-primary">Guardar</button>
+        <button type="submit" form="formulariocliente" class="btn btn-primary">Guardar</button>
       </div>
       
     </div>
