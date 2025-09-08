@@ -1,153 +1,478 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %}Inventario{% endblock title %}
+{% block title %}Clientes{% endblock title %}
 
 {% block content %}
-
-  <div class="pc-container">
-    <div class="pc-content">
-      <!-- [ breadcrumb ] start -->
-      <div class="page-header">
-        <div class="page-block">
-          <div class="row align-items-center">
-            <div class="col-md-12">
-              <div class="page-header-title">
-                <h5 class="mb-0">Home</h5>
-              </div>
+<div class="pc-container">
+  <div class="pc-content">
+    <!-- Breadcrumb -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="mb-0">Clientes</h5>
             </div>
-            <div class="col-md-12">
-              <ul class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Clientes</a></li>
-                <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
-              </ul>
-            </div>
+          </div>
+          <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+              <li class="breadcrumb-item">Clientes</li>
+            </ul>
           </div>
         </div>
       </div>
-    <!------[tablas clientes]-->
-    <!-- Botón para abrir el modal -->
-<div class="container py-4">
+    </div>
 
-  <!-- Encabezado -->
-  <div class="row align-items-center mb-4">
-    <div class="col-md-6 col-12 mb-2 mb-md-0">
-      <h2 class="text-center text-md-start">clientes</h2>
-    </div>
-    <div class="col-md-6 col-12 text-center text-md-end">
-        <a href="{% url 'register_clientes' %}" class="btn btn-success"> Nuevo cliente</a>
-        <i class="bi bi-plus-circle me-1"></i>
-      </a>
-    </div>
+    <!-- Contenido -->
+    <div class="container py-4">
+      <!-- Encabezado y acciones -->
+      <div class="row align-items-center mb-4">
+        <div class="col-md-6">
+          <h2 class="fw-bold">Lista de Clientes</h2>
+        </div>
+        <div class="col-md-6 text-md-end text-center">
+         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoCliente">
+          <i class="bi bi-plus-circle me-1"></i> Nuevo Cliente
+        </button>
+
+        </div>
+      </div>
+
+      <!-- Buscador y Selección de cantidad -->
+      <form method="get" class="row g-3 mb-3">
+        <div class="col-md-6">
+          <input type="text" id="filtro-cliente" class="form-control" placeholder="Buscar cliente en tiempo real...">
+        </div>
+        <div class="col-md-2">
+          <select name="per_page" class="form-select" onchange="this.form.submit()">
+            <option value="10" {% if per_page == '10' %}selected{% endif %}>10</option>
+            <option value="25" {% if per_page == '25' %}selected{% endif %}>25</option>
+            <option value="50" {% if per_page == '50' %}selected{% endif %}>50</option>
+            <option value="100" {% if per_page == '100' %}selected{% endif %}>100</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-search me-1"></i> Buscar
+          </button>
+        </div>
+      </form>
+
+      <!-- Tabla -->
+      <div class="table-responsive">
+
+        <table id="tabla-clientes" class="table table-striped table-bordered align-middle shadow-sm">
+
+          <thead class="table-primary text-center">
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>NIT/CI</th>
+              <th>Dirección</th>
+              <th>Teléfono</th>
+              <th>Operaciones</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            {% for cliente in clientes %}
+            <tr>
+              <td>{{ forloop.counter0|add:clientes.start_index }}</td>
+              <td>{{ cliente.nombre }}</td>
+              <td>{{ cliente.apellido }}</td>
+              <td>{{ cliente.nit_ci }}</td>
+              <td>{{ cliente.direccion }}</td>
+              <td>{{ cliente.telefono }}</td>
+              <td>
+              <div class="d-flex justify-content-center gap-1 flex-wrap">
+                <button onclick="abrirModalEdicion('{{ cliente.id }}')" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-pencil-square"></i> Editar
+                </button>
+                <button onclick="eliminarCliente('{{ cliente.id }}')" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i> Eliminar
+                </button>
+              </div>
+            </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="text-center text-muted">No hay clientes registrados.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <!-- Línea de botones y estado -->
+<div class="d-flex justify-content-between align-items-center mt-4">
+  <p class="text-muted mb-0">
+    Mostrando {{ clientes.start_index }}–{{ clientes.end_index }} de {{ clientes.paginator.count }} clientes
+  </p>
+  <a href="{% url 'listar_clientes' %}" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-arrow-clockwise"></i> Actualizar
+  </a>
+</div>
+
+<!-- Paginación -->
+{% if clientes.has_other_pages %}
+  <div class="d-flex justify-content-center mt-3">
+    <ul class="pagination">
+      {% if clientes.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ clientes.previous_page_number }}&per_page={{ per_page }}&search={{ search_query }}">
+            <i class="bi bi-chevron-left"></i> Anterior
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link"><i class="bi bi-chevron-left"></i> Anterior</span>
+        </li>
+      {% endif %}
+
+      <li class="page-item disabled">
+        <span class="page-link">Página {{ clientes.number }} de {{ clientes.paginator.num_pages }}</span>
+      </li>
+
+      {% if clientes.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ clientes.next_page_number }}&per_page={{ per_page }}&search={{ search_query }}">
+            Siguiente <i class="bi bi-chevron-right"></i>
+          </a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <span class="page-link">Siguiente <i class="bi bi-chevron-right"></i></span>
+        </li>
+      {% endif %}
+    </ul>
   </div>
+{% endif %}
 
-  <!-- Tabla -->
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover align-middle shadow-sm">
-      <thead class="table-primary text-center">
-        <tr>
-          <th>#</th>
-          <th>nombre</th>
-          <th>apellido</th>
-          <th>nit_ci</th>
-          <th>direccion</th>
-          <th>telefono</th>
-        </tr>
-      </thead>
-      <tbody class="text-center">
-        {% for cliente in clientes %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td class="text-wrap">{{ cliente.nombre }}</td>
-          <td class="text-wrap">{{ cliente.apellido }}</td>
-            <td class="text-wrap">{{ cliente.nit_ci }}</td>
-            <td class="text-wrap">{{ cliente.direccion }}</td>
-            <td class="text-wrap">{{ cliente.telefono }}</td>
-          <td>
-            <div class="d-flex justify-content-center flex-wrap gap-1">
-              <!-- Editar -->
-               <!--   -->
-              <a  href="{% url 'editar_cliente' cliente.id %}" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
-                <i class="bi bi-pencil-square"></i><span class="d-none d-sm-inline">Editar</span>
-              </a>
-
-              <!-- Eliminar -->
-               <!--  -->
-              <a  href="{% url 'eliminar_cliente' cliente.id %}" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
-                 onclick="return confirm('¿Estás seguro de que deseas eliminar este cliente?');">
-                <i class="bi bi-trash"></i><span class="d-none d-sm-inline">Eliminar</span>
-              </a>
-            </div>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="6" class="text-muted text-center">No hay clientes registrados.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    </div>
   </div>
 </div>
 
-
-
-<!--modal-->
-<!-- Modal -->
-<div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      
-      <!-- Encabezado -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="registroModalLabel">Registrar cliente</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+<!-- Modal de Nuevo Cliente -->
+<!-- Modal de Nuevo Cliente -->
+<div class="modal fade" id="modalNuevoCliente" tabindex="-1" aria-labelledby="modalNuevoClienteLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content shadow-sm">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalNuevoClienteLabel">Registrar Nuevo Cliente</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
       </div>
-      
-      <!-- Cuerpo con formulario -->
+
       <div class="modal-body">
-        <form id="formulariocliente">
-          <div class="mb-3">
-            <label for="nombrecliente" class="form-label">Nombre del cliente</label>
-            <input type="text" class="form-control" id="nombrecliente" required>
-          </div>
-          <div class="mb-3">
-            <label for="categoriacliente" class="form-label">Categoría</label>
-            <input type="text" class="form-control" id="categoriacliente" required>
-          </div>
-          <div class="mb-3">
-            <label for="preciocliente" class="form-label">Precio</label>
-            <input type="number" class="form-control" id="preciocliente" required>
-          </div>
-          <div class="mb-3">
-            <label for="stockcliente" class="form-label">Stock</label>
-            <input type="number" class="form-control" id="stockcliente" required>
+        <form id="formNuevoCliente" method="post">
+          {% csrf_token %}
+          <div id="form-messages" class="mb-2"></div>
+
+          {% for field in form %}
+            <div class="mb-3">
+              <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+              {{ field }}
+              <div class="invalid-feedback" id="error-{{ field.name }}"></div>
+            </div>
+          {% endfor %}
+
+          <div class="d-flex justify-content-end gap-2 pt-3">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-circle"></i> Cancelar
+            </button>
+            <button type="submit" class="btn btn-success" id="btnGuardarCliente">
+              <i class="bi bi-save"></i> Guardar Cliente
+            </button>
           </div>
         </form>
       </div>
-      
-      <!-- Pie con botones -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" form="formulariocliente" class="btn btn-primary">Guardar</button>
-      </div>
-      
     </div>
   </div>
 </div>
-          <!-- [ Main Content ] end -->
+
+<!-- Toast container (esquina superior derecha) -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+  <div id="toastCliente" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMensaje">
+        Cliente registrado correctamente
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
     </div>
   </div>
+</div>
+
+<!-- Modal Edición Cliente -->
+ <!-- Modal Edición Cliente -->
+<div class="modal fade" id="modalEditarCliente" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Editar Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="modalEditarContenido">
+        <!-- Aquí se inyectará el formulario -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+  <div id="toastCliente" class="toast align-items-center text-white bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMensaje"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
 
 {% endblock content %}
 
 {% block extra_js %}
+<!-- 🔍 Filtro de clientes -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const input = document.getElementById('filtro-cliente');
+  const tableRows = document.querySelectorAll('#tabla-clientes tbody tr');
 
+  input.addEventListener('keyup', function () {
+    const query = this.value.toLowerCase();
+    tableRows.forEach(function (row) {
+      const rowText = row.textContent.toLowerCase();
+      row.style.display = rowText.includes(query) ? '' : 'none';
+    });
+  });
+});
+</script>
+
+<!-- ✅ Función para mostrar toast -->
+<script>
+function mostrarToast(mensaje, tipo = 'success') {
+  const toastEl = document.getElementById('toastCliente');
+  const toastMsg = document.getElementById('toastMensaje');
+
+  toastMsg.textContent = mensaje;
+  toastEl.classList.remove('bg-success', 'bg-danger');
+  toastEl.classList.add(tipo === 'success' ? 'bg-success' : 'bg-danger');
+
+  bootstrap.Toast.getOrCreateInstance(toastEl).show();
+}
+</script>
+
+<!-- ➕ REGISTRAR CLIENTE -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('formNuevoCliente');
+  const modal = new bootstrap.Modal(document.getElementById('modalNuevoCliente'));
+  const btnGuardar = document.getElementById('btnGuardarCliente');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    limpiarErrores();
+
+    const camposObligatorios = ['nombre', 'apellido', 'nit_ci', 'direccion', 'telefono'];
+    let hayErrores = false;
+
+    camposObligatorios.forEach(campo => {
+      const input = form.querySelector(`[name="${campo}"]`);
+      if (!input.value.trim()) {
+        const errorDiv = document.getElementById(`error-${campo}`);
+        if (errorDiv) {
+          errorDiv.textContent = 'Este campo es obligatorio';
+          errorDiv.style.display = 'block';
+        }
+        input.classList.add('is-invalid');
+        hayErrores = true;
+      }
+    });
+
+    if (hayErrores) return;
+
+    btnGuardar.disabled = true;
+    const formData = new FormData(form);
+
+    fetch("{% url 'ajax_registrar_cliente' %}", {
+      method: 'POST',
+      headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+      body: formData
+    })
+    .then(response => response.json().then(data => ({ ok: response.ok, body: data })))
+    .then(({ ok, body }) => {
+      if (ok) {
+        modal.hide();
+        form.reset();
+        limpiarErrores();
+        mostrarToast("✅ Cliente registrado correctamente", 'success');
+        agregarClienteATabla(body.cliente);
+      } else {
+        mostrarErrores(body.errors);
+        mostrarToast("❌ Error al registrar cliente", 'error');
+      }
+    })
+    .catch(error => {
+      console.error('Error AJAX:', error);
+      alert("❌ Error al registrar cliente");
+    })
+    .finally(() => {
+      btnGuardar.disabled = false;
+    });
+  });
+
+  function mostrarErrores(errors) {
+    for (const campo in errors) {
+      const mensaje = errors[campo][0].message;
+      const div = document.getElementById(`error-${campo}`);
+      if (div) {
+        div.textContent = mensaje;
+        div.style.display = 'block';
+        const input = form.querySelector(`[name=${campo}]`);
+        if (input) input.classList.add('is-invalid');
+      }
+    }
+  }
+
+  function limpiarErrores() {
+    form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    form.querySelectorAll('.invalid-feedback').forEach(el => el.textContent = '');
+  }
+
+  function agregarClienteATabla(cliente) {
+    const tabla = document.querySelector('#tabla-clientes tbody');
+    const nuevaFila = document.createElement('tr');
+    nuevaFila.setAttribute('id', `fila-cliente-${cliente.id}`);
+
+    nuevaFila.innerHTML = `
+      <td>Nuevo</td>
+      <td>${cliente.nombre}</td>
+      <td>${cliente.apellido}</td>
+      <td>${cliente.nit_ci}</td>
+      <td>${cliente.direccion}</td>
+      <td>${cliente.telefono}</td>
+      <td>
+        <div class="d-flex justify-content-center gap-1 flex-wrap">
+          <button onclick="abrirModalEdicion(${cliente.id})" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil-square"></i> Editar
+          </button>
+          <button onclick="eliminarCliente(${cliente.id})" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-trash"></i> Eliminar
+          </button>
+        </div>
+      </td>
+    `;
+    tabla.prepend(nuevaFila);
+  }
+});
+</script>
+
+<!-- ✏️ EDITAR CLIENTE -->
+<script>
+function abrirModalEdicion(clienteId) {
+  const urlEditar = "{% url 'ajax_editar_cliente' id=0 %}".replace('0', clienteId);
+  fetch(urlEditar)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById('modalEditarContenido').innerHTML = data.html_form;
+      const modal = new bootstrap.Modal(document.getElementById('modalEditarCliente'));
+      modal.show();
+
+      const form = document.getElementById('formEditarCliente');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        guardarEdicion(clienteId);
+      });
+    })
+    .catch(error => {
+      console.error('Error al cargar el formulario:', error);
+      mostrarToast('❌ Error al cargar formulario de edición', 'error');
+    });
+}
+
+function guardarEdicion(clienteId) {
+  const form = document.getElementById('formEditarCliente');
+  const formData = new FormData(form);
+  const urlEditar = "{% url 'ajax_editar_cliente' id=0 %}".replace('0', clienteId);
+  fetch(urlEditar, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+    body: formData
+  })
+  .then(res => res.json().then(data => ({ ok: res.ok, data })))
+  .then(({ ok, data }) => {
+    if (ok) {
+      bootstrap.Modal.getInstance(document.getElementById('modalEditarCliente')).hide();
+      mostrarToast(data.message, 'success');
+      actualizarFilaCliente(data.cliente);
+    } else {
+      document.getElementById('modalEditarContenido').innerHTML = data.html_form;
+      const formEditar = document.getElementById('formEditarCliente');
+      formEditar.addEventListener('submit', function (e) {
+        e.preventDefault();
+        guardarEdicion(clienteId);
+      });
+    }
+  })
+  .catch(err => {
+    console.error('Error en edición:', err);
+    mostrarToast('❌ Error al actualizar el cliente', 'error');
+  });
+}
+
+function actualizarFilaCliente(cliente) {
+  const fila = document.getElementById(`fila-cliente-${cliente.id}`);
+  if (!fila) return;
+
+  fila.innerHTML = `
+    <td>${cliente.id}</td>
+    <td>${cliente.nombre}</td>
+    <td>${cliente.apellido}</td>
+    <td>${cliente.nit_ci}</td>
+    <td>${cliente.direccion}</td>
+    <td>${cliente.telefono}</td>
+    <td>
+      <div class="d-flex justify-content-center gap-1 flex-wrap">
+        <button onclick="abrirModalEdicion(${cliente.id})" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-pencil-square"></i> Editar
+        </button>
+        <button onclick="eliminarCliente(${cliente.id})" class="btn btn-sm btn-outline-danger">
+          <i class="bi bi-trash"></i> Eliminar
+        </button>
+      </div>
+    </td>
+  `;
+}
+</script>
+
+<!-- 🗑️ ELIMINAR CLIENTE -->
+<script>
+function eliminarCliente(clienteId) {
+  if (!confirm('¿Estás seguro de eliminar este cliente?')) return;
+  const urlEditar = "{% url 'ajax_eliminar_cliente' id=0 %}".replace('0', clienteId);
+  fetch(urlEditar)
+    .then(res => res.json())
+    .then(data => {
+      mostrarToast(data.message, 'success');
+      const fila = document.getElementById(`fila-cliente-${clienteId}`);
+      if (fila) fila.remove();
+    })
+    .catch(err => {
+      console.error('Error al eliminar cliente:', err);
+      mostrarToast('❌ No se pudo eliminar el cliente', 'error');
+    });
+}
+</script>
+
+<!-- 📊 Plugins adicionales -->
 <script src="{% static "assets/js/plugins/apexcharts.min.js" %}"></script>
 <script src="{% static "assets/js/plugins/jsvectormap.min.js" %}"></script>
 <script src="{% static "assets/js/plugins/world.js" %}"></script>
 <script src="{% static "assets/js/pages/dashboard-default.js" %}"></script>
+
+
 
 {% endblock extra_js %}
 

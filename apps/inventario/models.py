@@ -74,6 +74,14 @@ class Venta(models.Model):
 
     def __str__(self):
         return f"Venta #{self.id} - {self.fecha}"
+    
+    def calcular_monto(self):
+        return sum(det.subtotal for det in self.detalles.all())
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Guardamos primero para que tenga ID
+        self.monto = self.calcular_monto()
+        super().save(update_fields=['monto'])
 
 
 class DetalleVenta(models.Model):
@@ -119,3 +127,32 @@ class Notificacion(models.Model):
 
     def __str__(self):
         return f"Notificación para {self.producto.nombre} - {self.fecha.strftime('%Y-%m-%d %H:%M:%S')}"
+
+
+# models.py
+
+from django.db import models
+
+class Configuracion(models.Model):
+    porcentaje_ganancia = models.DecimalField(
+        max_digits=5, decimal_places=2, default=20.00,
+        help_text="Porcentaje de ganancia aplicado al precio de compra."
+    )
+    permitir_descuentos = models.BooleanField(default=True)
+    porcentaje_descuento_maximo = models.DecimalField(
+        max_digits=5, decimal_places=2, default=10.00,
+        help_text="Porcentaje máximo de descuento permitido."
+    )
+
+    nombre_negocio = models.CharField(max_length=100, default="Mi Negocio")
+    moneda = models.CharField(max_length=10, default="Bs.")
+
+    creado = models.DateTimeField(auto_now_add=True)
+    actualizado = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Configuración ({self.nombre_negocio})"
+
+    class Meta:
+        verbose_name = "Configuración"
+        verbose_name_plural = "Configuraciones"

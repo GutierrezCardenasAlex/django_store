@@ -71,6 +71,8 @@ INSTALLED_APPS = [
 
     #inventarios pges
     "apps.inventario",
+
+    "django.contrib.humanize",
     
 ]
 
@@ -100,6 +102,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.inventario.context_processors.notificaciones",  # ← agrega esto
             ],
         },
     },

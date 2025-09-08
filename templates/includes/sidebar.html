@@ -31,18 +31,19 @@
       <!-- superuser guard -->  
       {% endif %}
 
+      
         <li class="pc-item pc-caption">
-          <label>Apps</label>
+          <label>Paginas</label>
         </li>
         <li class="pc-item">
-          <a href="{% url "index" %}" class="pc-link">
+          <a href="{% url "resumen_financiero" %}" class="pc-link">
             <span class="pc-micon">
               <i data-feather="home"></i>
             </span>
             <span class="pc-mtext">Dashboard</span>
           </a>
         </li>
-        <li class="pc-item">
+        <!-- <li class="pc-item">
           <a href="{% url "dynamic_dt" %}" class="pc-link">
             <span class="pc-micon">
               <i data-feather="table"></i>
@@ -65,23 +66,46 @@
             </span>
             <span class="pc-mtext">Charts</span>
           </a>
-        </li>
-        <li class="pc-item">
-          <a href="{% url "inventario" %}" class="pc-link">
+        </li> -->
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link">
             <span class="pc-micon">
-              <i data-feather="bar-chart"></i>
+              <i data-feather="align-right"></i>
             </span>
-            <span class="pc-mtext">Inventario</span>
+            <span class="pc-mtext">Bodega</span><span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
+          <ul class="pc-submenu">
+            <li class="pc-item"><a class="pc-link" href="#!">Ajustes de Stock</a></li>
+            <li class="pc-item"><a class="pc-link" href="#!">Categorias</a></li>
+            <li class="pc-item"><a class="pc-link" href="{% url 'crear_compra' %}">Compras</a></li>
+            <li class="pc-item"><a class="pc-link" href="{% url "lista_productos" %}">Productos</a></li>
+            <li class="pc-item"><a class="pc-link" href="{% url "proveedor_list" %}">Proveedores</a></li>
+          </ul>
         </li>
-        <li class="pc-item">
-          <a href="{% url "listar_clientes" %}" class="pc-link">
+         <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link">
             <span class="pc-micon">
-              <i data-feather="bar-chart"></i>
+              <i data-feather="align-right"></i>
             </span>
-            <span class="pc-mtext">Clientes</span>
+            <span class="pc-mtext">Facturacion</span><span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
-        </li>        
+          <ul class="pc-submenu">
+            <li class="pc-item"><a class="pc-link" href="{% url "listar_clientes" %}">Clientes</a></li>
+            <li class="pc-item"><a class="pc-link" href="#!">Promociones</a></li>
+            <li class="pc-item"><a class="pc-link" href="{% url "ventas_list" %}">Ventas</a></li>
+          </ul>
+        </li>
+        <li class="pc-item pc-hasmenu">
+          <a href="#!" class="pc-link">
+            <span class="pc-micon">
+              <i data-feather="align-right"></i>
+            </span>
+            <span class="pc-mtext">Reportes</span><span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
+          </a>
+          <ul class="pc-submenu">
+            <li class="pc-item"><a class="pc-link" href="{% url "ventas_list" %}">Reportes</a></li>
+          </ul>
+        </li>
         <!-- <li class="pc-item pc-caption">
           <label>UI Components</label>
           <i data-feather="feather"></i>
@@ -185,8 +209,8 @@
               </ul>
             </li>
           </ul>
-        </li>
-        <li class="pc-item">
+        </li> -->
+        <!-- <li class="pc-item">
           <a href="{% url "sample_page" %}" class="pc-link">
             <span class="pc-micon"><i data-feather="sidebar"></i></span>
             <span class="pc-mtext">Sample page</span>

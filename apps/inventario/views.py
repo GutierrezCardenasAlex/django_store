@@ -52,9 +52,144 @@ def eliminar_producto(request, id):
     return redirect('lista_productos')  # Cambia este nombre al de tu vista de lista
 
 
+from django.shortcuts import render, redirect
+from .models import Cliente
+from .forms import ClienteForm
+from django.core.paginator import Paginator
+
 def listar_clientes(request):
-    clientes = Cliente.objects.all()  # Consulta todos los productos
-    return render(request, 'clientes/index.html', {'clientes': clientes})
+    clientes = Cliente.objects.all()
+    total_clientes = clientes.count() 
+
+    search_query = request.GET.get('search', '')
+    page_number = request.GET.get('page', 1)
+    per_page = request.GET.get('per_page', total_clientes)
+
+
+    if search_query:
+        clientes = clientes.filter(
+            nombre__icontains=search_query
+        ) | clientes.filter(
+            apellido__icontains=search_query
+        ) | clientes.filter(
+            nit_ci__icontains=search_query
+        ) | clientes.filter(
+            direccion__icontains=search_query
+        ) | clientes.filter(
+            telefono__icontains=search_query
+        )
+
+    paginator = Paginator(clientes, per_page)
+    page_obj = paginator.get_page(page_number)
+
+    # FORMULARIO
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_clientes')  # Recarga para ver el nuevo cliente
+    else:
+        form = ClienteForm()
+
+    return render(request, 'clientes/index.html', {
+        'clientes': page_obj,
+        'form': form,
+        'search_query': search_query,
+        'per_page': per_page,
+    })
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .forms import ClienteForm
+
+@csrf_exempt
+def ajax_registrar_cliente(request):
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            cliente = form.save()
+            return JsonResponse({
+                'success': True,
+                'cliente': {
+                    'id': cliente.id,
+                    'nombre': cliente.nombre,
+                    'apellido': cliente.apellido,
+                    'nit_ci': cliente.nit_ci,
+                    'direccion': cliente.direccion,
+                    'telefono': cliente.telefono,
+                }
+            })
+        else:
+            # Enviamos errores en formato limpio
+            errors = {field: error.get_json_data() for field, error in form.errors.items()}
+            return JsonResponse({'success': False, 'errors': errors}, status=400)
+
+    return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+
+def ajax_editar_clientes(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({
+                'success': True,
+                'message': 'Cliente actualizado correctamente',
+                'cliente': {
+                    'id': cliente.id,
+                    'nombre': cliente.nombre,
+                    'apellido': cliente.apellido,
+                    'nit_ci': cliente.nit_ci,
+                    'direccion': cliente.direccion,
+                    'telefono': cliente.telefono,
+                }
+            })
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+    else:
+        form = ClienteForm(instance=cliente)
+        html_form = render_to_string('clientes/includes/form_editar.html', {'form': form, 'cliente': cliente}, request=request)
+        return JsonResponse({'html_form': html_form})
+
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+
+def ajax_editar_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            cliente = form.save()
+            return JsonResponse({
+                'message': 'Cliente actualizado correctamente.',
+                'cliente': {
+                    'id': cliente.id,
+                    'nombre': cliente.nombre,
+                    'apellido': cliente.apellido,
+                    'nit_ci': cliente.nit_ci,
+                    'direccion': cliente.direccion,
+                    'telefono': cliente.telefono,
+                }
+            })
+        else:
+            html_form = render_to_string('clientes/includes/form_editar.html', {'form': form}, request=request)
+            return JsonResponse({'html_form': html_form}, status=400)
+    else:
+        form = ClienteForm(instance=cliente)
+        html_form = render_to_string('clientes/includes/form_editar.html', {'form': form}, request=request)
+        return JsonResponse({'html_form': html_form})
+
+
+def ajax_eliminar_cliente(request, id):
+    cliente = get_object_or_404(Cliente, id=id)
+    cliente.delete()
+    return JsonResponse({'success': True, 'message': 'Cliente eliminado correctamente'})
+
+
 
 def register_clientes(request):
     if request.method == 'POST':
@@ -87,17 +222,22 @@ def eliminar_cliente(request, id):
 
 
 from django.contrib.auth.decorators import login_required
-
-
 bolivia_tz = pytz.timezone('America/La_Paz')
 bolivia_now = timezone.now().astimezone(bolivia_tz)
-
 from decimal import Decimal
+from .models import Configuracion
 @login_required
 def crear_compra(request):
     if request.method == 'POST':
         producto_form = ProductoForm(request.POST)
         compra_form = CompraForm(request.POST)
+        configuracion = Configuracion.objects.first()
+
+        if not configuracion:
+            return render(request, 'error.html', {'mensaje': 'No hay configuración cargada.'})
+
+        # Obtener el porcentaje de ganancia
+        porcentaje_ganancia = configuracion.porcentaje_ganancia
 
         if producto_form.is_valid() and compra_form.is_valid():
             # Obtener instancia del producto sin guardar aún
@@ -105,7 +245,7 @@ def crear_compra(request):
 
             # Asignar precio_venta = precio_compra antes de guardar
             #estimacion a ganar es de un 20 %
-            producto.precio_venta = producto.precio_compra  * Decimal('1.20')
+            producto.precio_venta = producto.precio_compra  + (producto.precio_compra * porcentaje_ganancia / Decimal('100')) 
             producto.save()
 
             # Calcular monto total
@@ -159,7 +299,7 @@ def crear_venta(request):
             venta.usuario = request.user
             venta.fecha = datetime.now().date()
             venta.hora = datetime.now().time()
-            venta.monto = 0  # lo calculamos más abajo
+            venta.monto = 0
             venta.save()
 
             total = 0
@@ -187,7 +327,7 @@ def crear_venta(request):
             venta.save()
 
             messages.success(request, "Venta creada exitosamente.")
-            return redirect('ventas_list')  # 👈 redirige a la venta recién creada
+            return redirect('ventas_list')
         else:
             messages.error(request, "Corrige los errores del formulario.")
     else:
@@ -197,8 +337,29 @@ def crear_venta(request):
     return render(request, 'ventas/crear_venta.html', {
         'venta_form': venta_form,
         'formset': formset,
-        'productos': Producto.objects.all(),
+        'productos': Producto.objects.none(),  # 👈 clave: NO mostrar productos en el select inicial
     })
+
+# views.py
+from django.http import JsonResponse
+from django.db.models import Q
+from .models import Producto
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def buscar_productos(request):
+    q = request.GET.get("q", "")
+    productos = Producto.objects.filter(
+        Q(nombre__icontains=q)
+    )
+    data = [{
+        "id": p.id,
+        "nombre": p.nombre,
+        "precio_venta": float(p.precio_venta),
+        "stock": p.cantidad,
+    } for p in productos]
+    return JsonResponse(data, safe=False)
+
 
 
 def ventas_list(request):
@@ -222,10 +383,14 @@ from .models import Notificacion
 
 def panel_notificaciones(request):
     notificaciones = Notificacion.objects.order_by('-fecha')[:20]
+    notificaciones_no_leidas_count = Notificacion.objects.filter(leida=False).count()
+
     context = {
-        'notificaciones': notificaciones
+        'notificaciones': notificaciones,
+        'notificaciones_no_leidas_count': notificaciones_no_leidas_count
     }
-    return render(request, 'inventario/index.html', context)
+    return render(request, 'includes/navigation.html', context)
+
 
 def marcar_notificacion_leida(request, notificacion_id):
     notificacion = get_object_or_404(Notificacion, id=notificacion_id)
@@ -243,3 +408,83 @@ def eliminar_todas_las_notificaciones(request):
     Notificacion.objects.all().delete()
     messages.success(request, "Todas las notificaciones han sido eliminadas.")
     return redirect(request.META.get('HTTP_REFERER', 'panel_notificaciones'))
+
+
+
+from django.shortcuts import render
+from django.db.models import Sum
+from apps.inventario.models import Venta, Compra
+
+def resumen_financiero(request):
+    # Totales
+    total_ventas = Venta.objects.aggregate(total=Sum('monto'))['total'] or 0
+    total_compras = Compra.objects.aggregate(total=Sum('monto'))['total'] or 0
+    ganancia = total_ventas - total_compras
+
+    # Ventas recientes
+    ventas = Venta.objects.all().order_by('-fecha', '-hora')[:10]
+
+    context = {
+        'total_ventas': total_ventas,
+        'total_compras': total_compras,
+        'ganancia': ganancia,
+        'ventas': ventas
+    }
+    return render(request, 'pages/index.html', context)
+    
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from .models import Proveedor
+from .forms import ProveedorForm  # Lo vamos a crear abajo
+
+# Ver lista de proveedores
+class ProveedorListView(ListView):
+    model = Proveedor
+    template_name = 'proveedor/lista.html'
+    context_object_name = 'proveedores'
+
+# Crear proveedor
+class ProveedorCreateView(CreateView):
+    model = Proveedor
+    form_class = ProveedorForm
+    template_name = 'proveedor/form.html'
+    success_url = reverse_lazy('proveedor_list')
+
+# Editar proveedor
+class ProveedorUpdateView(UpdateView):
+    model = Proveedor
+    form_class = ProveedorForm
+    template_name = 'proveedor/form.html'
+    success_url = reverse_lazy('proveedor_list')
+
+# Eliminar proveedor
+class ProveedorDeleteView(DeleteView):
+    model = Proveedor
+    template_name = 'proveedor/confirmar_eliminar.html'
+    success_url = reverse_lazy('proveedor_list')
+
+
+# views.py
+
+from django.shortcuts import render, redirect
+from .models import Configuracion
+from .forms import ConfiguracionForm
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def editar_configuracion(request):
+    config, _ = Configuracion.objects.get_or_create(id=1)
+
+    if request.method == 'POST':
+        form = ConfiguracionForm(request.POST, instance=config)
+        if form.is_valid():
+            form.save()
+            return redirect('editar_configuracion')
+    else:
+        form = ConfiguracionForm(instance=config)
+
+    return render(request, 'configuracion/editar_configuracion.html', {
+        'form': form
+    })
+

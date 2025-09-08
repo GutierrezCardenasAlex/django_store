@@ -1,8 +1,12 @@
 from django import forms
-from .models import Producto, Cliente, Compra, DetalleCompra, Producto, Venta, DetalleVenta
+from .models import Producto, Cliente, Compra, DetalleCompra, Producto, Venta, DetalleVenta, Proveedor
 from django.forms import inlineformset_factory
 from django.forms import modelformset_factory
 
+class ProveedorForm(forms.ModelForm):
+    class Meta:
+        model = Proveedor
+        fields = '__all__'
 
 class DetalleVentaForm(forms.ModelForm):
     class Meta:
@@ -32,22 +36,30 @@ class VentaForm(forms.ModelForm):
             'cliente': forms.Select(attrs={'class': 'form-control'}),
         }
 
+from django import forms
+from django.forms import modelformset_factory  # ✅ <-- esta línea
+
+from .models import DetalleVenta
+
 class DetalleVentaForm(forms.ModelForm):
     class Meta:
         model = DetalleVenta
         fields = ['producto', 'cantidad', 'descuento']
-        widgets = {
-            'producto': forms.Select(attrs={'class': 'form-control'}),
-            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'min': '1'}),
-            'descuento': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-        }
+
+    def clean_producto(self):
+        producto = self.cleaned_data.get('producto')
+        if not producto:
+            raise forms.ValidationError("Debes seleccionar un producto.")
+        return producto
+
 
 DetalleVentaFormSet = modelformset_factory(
     DetalleVenta,
     form=DetalleVentaForm,
-    extra=1,  # Número de formularios vacíos por defecto
+    extra=0,
     can_delete=False
 )
+
 
 class CompraForm(forms.ModelForm):
     incluir_proveedor = forms.BooleanField(required=False, label="¿Agregar proveedor?")
@@ -64,6 +76,7 @@ class DetalleCompraForm(forms.ModelForm):
     class Meta:
         model = DetalleCompra
         fields = ['producto', 'cantidad', 'precio']
+    
 
 class ProductoForm(forms.ModelForm):
     class Meta:
@@ -89,4 +102,27 @@ class ClienteForm(forms.ModelForm):
             'direccion': forms.TextInput(attrs={'class': 'form-control'}),
             'telefono': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+
+# forms.py
+
+from django import forms
+from .models import Configuracion
+
+class ConfiguracionForm(forms.ModelForm):
+    class Meta:
+        model = Configuracion
+        fields = [
+            'porcentaje_ganancia',
+            'permitir_descuentos',
+            'porcentaje_descuento_maximo',
+            'nombre_negocio',
+            'moneda'
+        ]
+        widgets = {
+            'porcentaje_ganancia': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'permitir_descuentos': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'porcentaje_descuento_maximo': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'nombre_negocio': forms.TextInput(attrs={'class': 'form-control'}),
+            'moneda': forms.TextInput(attrs={'class': 'form-control'}),
         }

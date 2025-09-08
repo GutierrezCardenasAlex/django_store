@@ -35,6 +35,16 @@
           </li>
         </ul>
       </div>
+      {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
       <!-- [Mobile Media Block end] -->
       <div class="ms-auto">
         <ul class="list-unstyled">
@@ -48,7 +58,7 @@
               aria-expanded="false"
             >
               <i data-feather="bell"></i>
-              <span class="badge bg-success pc-h-badge">3</span>
+              <span class="badge bg-success pc-h-badge">{{ notificaciones_no_leidas_count }}</span>
             </a>
 <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
   <div class="dropdown-header d-flex align-items-center justify-content-between">
@@ -60,24 +70,34 @@
     </h5>
     <a href="{% url 'marcar_todas_como_leidas' %}" class="btn btn-link btn-sm">Mark all read</a>
   </div>
-  <div class="dropdown-body text-wrap header-notification-scroll position-relative" style="max-height: calc(100vh - 215px)">
-    <ul style="list-style: none; padding-left: 0;">
-      {% for notificacion in notificaciones %}
-        <li style="padding: 10px; border-bottom: 1px solid #eaeaea;">
-          <div>
-            <small><strong>{{ notificacion.fecha|date:"d-m-Y H:i" }}</strong></small><br>
-            <span>{{ notificacion.mensaje }}</span>
-          </div>
-        </li>
-      {% empty %}
-        <li class="text-center py-2">No hay notificaciones.</li>
-      {% endfor %}
-    </ul>
-  </div>
-  <div class="text-center py-2">
-    <a href="{% url 'eliminar_todas_las_notificaciones' %}" class="link-danger">Clear all Notifications</a>
-  </div>
+
+<div class="dropdown-body text-wrap header-notification-scroll position-relative" style="max-height: calc(100vh - 215px); overflow-y: auto; padding: 0 1rem;">
+  <ul class="list-unstyled mb-0">
+    {% for notificacion in notificaciones %}
+      <li class="mb-2">
+        <div class="p-3 rounded shadow-sm 
+          {% if notificacion.leida %}
+            bg-light text-secondary
+          {% else %}
+            bg-primary text-white fw-bold
+          {% endif %}
+        ">
+          <small class="d-block mb-1">{{ notificacion.fecha|date:"d-m-Y H:i" }}</small>
+          <span>{{ notificacion.mensaje }}</span>
+        </div>
+      </li>
+    {% empty %}
+      <li class="text-center py-3 text-muted fst-italic">No hay notificaciones.</li>
+    {% endfor %}
+  </ul>
 </div>
+
+<div class="text-center py-2 border-top">
+  <a href="{% url 'eliminar_todas_las_notificaciones' %}" class="text-danger fw-semibold text-decoration-none">
+    Clear all Notifications
+  </a>
+</div>
+
 
 
 
@@ -110,7 +130,7 @@
               </div>
               <div class="dropdown-body">
                 <div class="profile-notification-scroll position-relative" style="max-height: calc(100vh - 225px)">
-                  <a href="#" class="dropdown-item">
+                  <a href="{% url "editar_configuracion" %}" class="dropdown-item">
                     <span>
                       <svg class="pc-icon text-muted me-2">
                         <use xlink:href="#custom-setting-outline"></use>

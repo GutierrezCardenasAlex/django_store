@@ -1,0 +1,46 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Confiuracion{% endblock title %}
+
+{% block content %}
+
+<div class="pc-container">
+  <div class="pc-content">
+
+    <!-- [ Breadcrumb ] -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="mb-0">Configuracion del Sistemas</h4>
+            <div class="text-end">
+                <span class="badge bg-light text-dark">
+                <i class="fas fa-clock me-1"></i>
+                <span id="reloj-fecha"></span> - <span id="reloj-hora"></span>
+                </span>
+            </div>
+            </div>
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url "index" %}">Admin</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0)">Configuraciones</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Tienda</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+<div class="container mt-4">
+  <h3>Configuración del Sistema</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Guardar</button>
+  </form>
+</div>
+
+
+</div>
+</div>
+{% endblock %}

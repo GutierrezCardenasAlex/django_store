@@ -9,3 +9,5 @@ def notificar_bajo_stock(sender, instance, **kwargs):
             producto=instance,
             mensaje=f"El producto '{instance.nombre}' tiene bajo stock ({instance.cantidad} unidades)."
         )
+
+

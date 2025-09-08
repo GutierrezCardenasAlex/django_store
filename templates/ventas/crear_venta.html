@@ -4,100 +4,115 @@
 {% block title %}Registrar Venta{% endblock title %}
 
 {% block content %}
+
+<style>
+  .fila-sin-stock {
+    background-color: #ffe6e6 !important;
+  }
+
+  .stock-info.sin-stock-text {
+    color: red;
+    font-weight: bold;
+  }
+</style>
+
 <div class="pc-container">
-    <div class="pc-content">
-      <!-- [ breadcrumb ] start -->
-      <div class="page-header">
-        <div class="page-block">
-          <div class="row align-items-center">
-            <div class="col-md-12">
-              <div class="page-header-title">
-                <h5 class="mb-0">Home</h5>
-              </div>
+  <div class="pc-content">
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="mb-0">Home</h5>
             </div>
-            <div class="col-md-12">
-              <ul class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
-                <li class="breadcrumb-item" aria-current="page">Venta</li>
-              </ul>
-            </div>
+          </div>
+          <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+              <li class="breadcrumb-item" aria-current="page">Venta</li>
+            </ul>
           </div>
         </div>
       </div>
-<div class="container py-4">
+    </div>
 
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-        {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="container py-4">
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      <h1 class="mb-4">Registrar Venta</h1>
+
+      <!-- Buscador estilo POS -->
+      <div class="mb-3 position-relative">
+        <input type="text" id="buscar-producto" class="form-control" placeholder="🔍 Buscar producto por nombre o código...">
+        <div id="resultados-producto" class="list-group mt-1" style="z-index: 1000; position: absolute; width: 100%;"></div>
       </div>
+
+      <form method="post">
+        {% csrf_token %}
+        {{ venta_form.as_p }}
+        {{ formset.management_form }}
+
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>Descuento</th>
+              <th>Subtotal</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="formset-body">
+  {% if formset.forms %}
+    {% for form in formset %}
+    <tr class="form-row align-middle">
+      <td>
+        <select name="{{ form.producto.name }}" class="form-select producto">
+          <option value="" selected disabled>Seleccione un producto</option>
+        </select>
+      </td>
+      <td>
+        <input type="number" name="{{ form.cantidad.name }}" class="form-control cantidad" value="{{ form.cantidad.value|default:'' }}" min="1">
+        <div class="stock-info text-muted" style="font-size: 0.8em;"></div>
+      </td>
+      <td>
+        <input type="number" name="{{ form.descuento.name }}" class="form-control descuento" value="{{ form.descuento.value|default:'0' }}">
+      </td>
+      <td>
+        <input type="text" class="form-control subtotal" readonly>
+      </td>
+      <td>
+        <button type="button" class="btn btn-outline-danger btn-sm remove-form">🗑️</button>
+      </td>
+    </tr>
     {% endfor %}
   {% endif %}
+</tbody>
 
-  <h1 class="mb-4">Registrar Venta</h1>
+        </table>
 
-  <form method="post">
-    {% csrf_token %}
-    {{ venta_form.as_p }}
-    {{ formset.management_form }}
+        <button type="button" id="add-form" class="btn btn-success my-3">➕ Agregar Producto</button>
 
-    <table class="table table-bordered align-middle">
-      <thead class="table-light">
-        <tr>
-          <th>Producto</th>
-          <th>Cantidad</th>
-          <th>Descuento</th>
-          <th>Subtotal</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody id="formset-body">
-        {% for form in formset %}
-        <tr class="form-row align-middle">
-          <td>
-            <select name="form-{{ forloop.counter0 }}-producto" class="form-select producto">
-              <option value="" selected disabled>Seleccione un producto</option>
-              {% for p in productos %}
-              <option value="{{ p.pk }}" data-precio="{{ p.precio_venta }}" data-stock="{{ p.cantidad }}">
-                {{ p.nombre }}
-              </option>
-              {% endfor %}
-            </select>
-          </td>
-          <td>
-            <input type="number" name="form-{{ forloop.counter0 }}-cantidad" class="form-control cantidad" min="1">
-            <div class="stock-info text-muted" style="font-size: 0.8em;"></div>
-          </td>
-          <td>
-            <input type="number" name="form-{{ forloop.counter0 }}-descuento" class="form-control descuento" value=0>
-          </td>
-          <td>
-            <input type="text" class="form-control subtotal" readonly>
-          </td>
-          <td>
-            <button type="button" class="btn btn-outline-danger btn-sm remove-form">🗑️</button>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+        <p><strong>Total: Bs. <span id="venta-total">0.00</span></strong></p>
 
-    <button type="button" id="add-form" class="btn btn-success my-3">➕ Agregar Producto</button>
-
-    <p><strong>Total: Bs. <span id="venta-total">0.00</span></strong></p>
-
-    <button type="submit" class="btn btn-primary">Guardar Venta</button>
-  </form>
-
-</div>
-
-</div>
+        <button type="submit" class="btn btn-primary">Guardar Venta</button>
+      </form>
+    </div>
   </div>
+</div>
 
 <!-- JS Scripts -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
 $(document).ready(function () {
     let totalForms = $('#id_form-TOTAL_FORMS');
@@ -111,7 +126,7 @@ $(document).ready(function () {
             let producto = fila.find('select option:selected');
             let precio = parseFloat(producto.data('precio')) || 0;
             let cantidad = parseFloat(fila.find('.cantidad').val()) || 0;
-            let descuento = parseFloat(fila.find('.descuento').val(0)) || 0;
+            let descuento = parseFloat(fila.find('.descuento').val()) || 0;
 
             let subtotal = (precio * cantidad) - descuento;
             if (subtotal < 0) subtotal = 0;
@@ -132,72 +147,192 @@ $(document).ready(function () {
         }
     }
 
-    $('#add-form').click(function () {
-        let $lastFormRow = $('#formset-body .form-row:last');
-        let $newFormRow = $lastFormRow.clone(false);
+$('#add-form').click(function () {
+    let $lastFormRow = $('#formset-body .form-row:last');
+    let $newFormRow = $lastFormRow.clone(false);
 
-        $newFormRow.find('input, select').each(function () {
-            let name = $(this).attr('name');
-            if (!name) return;
+    $newFormRow.find('input, select').each(function () {
+        let name = $(this).attr('name');
+        if (!name) return;
 
-            let newName = name.replace(/-(\d+)-/, `-${formIndex}-`);
-            let newId = 'id_' + newName;
+        let newName = name.replace(/-(\d+)-/, `-${formIndex}-`);
+        let newId = 'id_' + newName;
 
-            $(this).attr({
-                'name': newName,
-                'id': newId
-            });
-
-            if ($(this).is('select')) {
-                $(this).val('');
-            } else if (!$(this).hasClass('subtotal')) {
-                $(this).val('');
-            } else {
-                $(this).val('0.00');
-            }
+        $(this).attr({
+            'name': newName,
+            'id': newId
         });
 
-        $newFormRow.find('.stock-info').text('');
-        $newFormRow.appendTo('#formset-body');
-        formIndex++;
-        totalForms.val(formIndex);
-        actualizarTotales();
-    });
-
-    $('#formset-body').on('click', '.remove-form', function () {
-        if ($('#formset-body .form-row').length > 1) {
-            $(this).closest('.form-row').remove();
-            formIndex--;
-            totalForms.val(formIndex);
-            actualizarTotales();
+        if ($(this).is('select')) {
+            const placeholder = '<option value="" selected disabled>Seleccione un producto</option>';
+            $(this).html(placeholder);  // ⚠️ Limpia todas las opciones y deja solo el placeholder
+        } else if (!$(this).hasClass('subtotal')) {
+            $(this).val('');
+        } else {
+            $(this).val('0.00');
         }
     });
+
+    $newFormRow.find('.stock-info').text('');
+    $newFormRow.appendTo('#formset-body');
+    formIndex++;
+    totalForms.val(formIndex);
+    actualizarTotales();
+});
+
+
 
     $('#formset-body').on('input change', '.cantidad, .descuento, select', function () {
         actualizarTotales();
     });
 
     $('#formset-body').on('change', 'select.producto', function () {
-        const fila = $(this).closest('.form-row');
-        const producto = $(this).find('option:selected');
-        const stock = parseInt(producto.data('stock')) || 0;
+    const fila = $(this).closest('.form-row');
+    const producto = $(this).find('option:selected');
+    const stock = parseInt(producto.data('stock')) || 0;
 
-        fila.find('.stock-info').text('Disponible: ' + stock);
-        const cantidadInput = fila.find('.cantidad');
-        cantidadInput.attr('max', stock);
+    const cantidadInput = fila.find('.cantidad');
+    cantidadInput.attr('max', stock);
 
+    const stockInfo = fila.find('.stock-info');
+
+    if (stock <= 0) {
+        // Agrega clase a toda la fila
+        fila.addClass('fila-sin-stock');
+
+        // Muestra advertencia de stock
+        stockInfo.text('⚠️ Sin stock disponible').addClass('sin-stock-text');
+
+        // Deshabilita cantidad
+        cantidadInput.val(0).prop('disabled', true);
+    } else {
+        // Quita clase si había sido aplicada
+        fila.removeClass('fila-sin-stock');
+        stockInfo.removeClass('sin-stock-text').text('Disponible: ' + stock);
+        cantidadInput.prop('disabled', false);
+
+        // Ajusta cantidad si es inválida
         let cantidadVal = parseInt(cantidadInput.val()) || 0;
         if (cantidadVal > stock) {
             cantidadInput.val(stock);
+        } else if (cantidadVal <= 0) {
+            cantidadInput.val(1);
         }
-    });
+    }
 
     actualizarTotales();
+});
+
+
+    // ------------------------
+    // Buscador de productos
+    // ------------------------
+
+    $(document).ready(function () {
+    $('#buscar-producto').on('input', function () {
+        const query = $(this).val();
+
+        if (query.length < 2) {
+            $('#resultados-producto').empty().hide();
+            return;
+        }
+
+        $.getJSON("{% url 'buscar_productos' %}", { q: query }, function (data) {
+    let resultados = '';
+    if (data.length > 0) {
+        data.forEach(function (producto) {
+            const sinStock = producto.stock <= 0;
+            resultados += `
+                <a href="#" class="list-group-item list-group-item-action ${sinStock ? 'disabled-producto' : ''}"
+                   style="${sinStock ? 'color: red; pointer-events: none; background-color: #f8d7da;' : ''}"
+                   data-id="${producto.id}" 
+                   data-nombre="${producto.nombre}" 
+                   data-precio="${producto.precio_venta}" 
+                   data-stock="${producto.stock}">
+                   ${producto.nombre} - Bs. ${producto.precio_venta} (Stock: ${producto.stock})
+                </a>`;
+        });
+    } else {
+        resultados = `<div class="list-group-item">Sin resultados</div>`;
+    }
+
+    $('#resultados-producto').html(resultados).show();
+});
+
+    });
+
+    $('#resultados-producto').on('click', 'a', function (e) {
+        e.preventDefault();
+
+        const id = $(this).data('id');
+        const nombre = $(this).data('nombre');
+        const precio = $(this).data('precio');
+        const stock = $(this).data('stock');
+
+        agregarProductoAlForm(id, nombre, precio, stock);
+
+        $('#buscar-producto').val('');
+        $('#resultados-producto').empty().hide();
+    });
+
+ function agregarProductoAlForm(id, nombre, precio, stock) {
+    // Verificar si ya fue agregado
+    let yaExiste = false;
+    $('#formset-body .form-row').each(function () {
+        const prodSelect = $(this).find('select.producto');
+        if (parseInt(prodSelect.val()) === parseInt(id)) {
+            yaExiste = true;
+            return false;
+        }
+    });
+    if (yaExiste) {
+        alert('⚠️ Este producto ya fue agregado.');
+        return;
+    }
+
+    const index = $('#id_form-TOTAL_FORMS').val();
+    const sinStock = stock <= 0;
+
+    let newRow = `
+    <tr class="form-row align-middle ${sinStock ? 'fila-sin-stock' : ''}">
+        <td>
+            <select name="form-${index}-producto" class="form-select producto">
+                <option value="" disabled>Seleccione un producto</option>
+                <option value="${id}" selected data-precio="${precio}" data-stock="${stock}">
+                    ${nombre}
+                </option>
+            </select>
+        </td>
+        <td>
+            <input type="number" name="form-${index}-cantidad" class="form-control cantidad" 
+                   value="${sinStock ? 0 : 1}" min="1" max="${stock}" ${sinStock ? 'disabled' : ''}>
+            <div class="stock-info text-muted ${sinStock ? 'sin-stock-text' : ''}" style="font-size: 0.8em;">
+                ${sinStock ? '⚠️ Sin stock disponible' : 'Disponible: ' + stock}
+            </div>
+        </td>
+        <td>
+            <input type="number" name="form-${index}-descuento" class="form-control descuento" value="0">
+        </td>
+        <td>
+            <input type="text" class="form-control subtotal" readonly value="${precio.toFixed(2)}">
+        </td>
+        <td>
+            <button type="button" class="btn btn-outline-danger btn-sm remove-form">🗑️</button>
+        </td>
+    </tr>`;
+
+    $('#formset-body').append(newRow);
+    $('#id_form-TOTAL_FORMS').val(parseInt(index) + 1);
+    actualizarTotales();
+}
+
+});
+
 });
 </script>
 
 <script>
-  // Oculta automáticamente los mensajes después de 4 segundos
+  // Oculta automáticamente los mensajes flash después de 4 segundos
   setTimeout(function () {
     let alerts = document.querySelectorAll('.alert');
     alerts.forEach(function (alert) {
@@ -209,4 +344,5 @@ $(document).ready(function () {
     });
   }, 4000);
 </script>
+
 {% endblock content %}

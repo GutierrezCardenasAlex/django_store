@@ -28,8 +28,15 @@
 
     <!-- Contenido -->
     <div class="container py-4">
-      <h2 class="mb-4">Listado de Ventas</h2>
-
+    <div class="col-md-6 col-12 mb-2 mb-md-0">
+      <h2 class="text-center text-md-start">Lista de Ventas</h2>
+    </div>
+    <div class="col-md-6 col-12 text-center text-md-end">
+      <a href="{% url 'crear_venta' %}" class="btn btn-danger">
+        <i class="bi bi-plus-circle me-1"></i> Nuevo Registro
+      </a>
+    </div>
+  </div>
       <table class="table table-bordered table-hover">
         <thead class="table-light">
           <tr>
