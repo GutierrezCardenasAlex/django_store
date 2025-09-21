@@ -1,0 +1,13 @@
+{% extends "layouts/base.html" %}
+{% block title %}Editar Categoría{% endblock title %}
+{% block content %}
+<div class="container mt-4">
+    <h2>✏️ Editar Categoría</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+        <a href="{% url 'lista_categorias' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock content %}

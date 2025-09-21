@@ -64,17 +64,20 @@
         <table class="table table-bordered align-middle">
           <thead class="table-light">
             <tr>
+              <th>Eliminar</th>
               <th>Producto</th>
               <th>Cantidad</th>
               <th>Descuento</th>
               <th>Subtotal</th>
-              <th>Acciones</th>
             </tr>
           </thead>
           <tbody id="formset-body">
   {% if formset.forms %}
     {% for form in formset %}
     <tr class="form-row align-middle">
+      <td>
+        <button type="button" class="btn btn-outline-danger btn-sm remove-form">🗑️</button>
+      </td>
       <td>
         <select name="{{ form.producto.name }}" class="form-select producto">
           <option value="" selected disabled>Seleccione un producto</option>
@@ -90,17 +93,13 @@
       <td>
         <input type="text" class="form-control subtotal" readonly>
       </td>
-      <td>
-        <button type="button" class="btn btn-outline-danger btn-sm remove-form">🗑️</button>
-      </td>
+      
     </tr>
     {% endfor %}
   {% endif %}
 </tbody>
 
         </table>
-
-        <button type="button" id="add-form" class="btn btn-success my-3">➕ Agregar Producto</button>
 
         <p><strong>Total: Bs. <span id="venta-total">0.00</span></strong></p>
 
@@ -135,52 +134,16 @@ $(document).ready(function () {
         });
 
         $('#venta-total').text(totalVenta.toFixed(2));
-        toggleEliminar();
+        mostrarMensajeSiVacio();          
     }
-
-    function toggleEliminar() {
-        let rows = $('#formset-body .form-row');
-        if (rows.length <= 1) {
-            rows.find('.remove-form').hide();
-        } else {
-            rows.find('.remove-form').show();
-        }
+function mostrarMensajeSiVacio() {
+    const rows = $('#formset-body .form-row');
+    if (rows.length === 0) {
+        $('#formset-body').html(`
+            <tr><td colspan="5" class="text-center text-muted">🛒 No hay productos en la venta.</td></tr>
+        `);
     }
-
-$('#add-form').click(function () {
-    let $lastFormRow = $('#formset-body .form-row:last');
-    let $newFormRow = $lastFormRow.clone(false);
-
-    $newFormRow.find('input, select').each(function () {
-        let name = $(this).attr('name');
-        if (!name) return;
-
-        let newName = name.replace(/-(\d+)-/, `-${formIndex}-`);
-        let newId = 'id_' + newName;
-
-        $(this).attr({
-            'name': newName,
-            'id': newId
-        });
-
-        if ($(this).is('select')) {
-            const placeholder = '<option value="" selected disabled>Seleccione un producto</option>';
-            $(this).html(placeholder);  // ⚠️ Limpia todas las opciones y deja solo el placeholder
-        } else if (!$(this).hasClass('subtotal')) {
-            $(this).val('');
-        } else {
-            $(this).val('0.00');
-        }
-    });
-
-    $newFormRow.find('.stock-info').text('');
-    $newFormRow.appendTo('#formset-body');
-    formIndex++;
-    totalForms.val(formIndex);
-    actualizarTotales();
-});
-
-
+}
 
     $('#formset-body').on('input change', '.cantidad, .descuento, select', function () {
         actualizarTotales();
@@ -219,6 +182,16 @@ $('#add-form').click(function () {
             cantidadInput.val(1);
         }
     }
+
+    actualizarTotales();
+});
+ $('#formset-body').on('click', '.remove-form', function () {
+    const row = $(this).closest('.form-row');
+    row.remove();
+
+    // Recontar filas existentes y actualizar el TOTAL_FORMS
+    const total = $('#formset-body .form-row').length;
+    $('#id_form-TOTAL_FORMS').val(total);
 
     actualizarTotales();
 });

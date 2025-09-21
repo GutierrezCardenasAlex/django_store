@@ -20,35 +20,20 @@
               <ul class="breadcrumb mb-0">
                 <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
                 <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
-                <li class="breadcrumb-item" aria-current="page">Editar</li>
+                <li class="breadcrumb-item" aria-current="page">Register</li>
               </ul>
             </div>
           </div>
         </div>
       </div>
-    <!------[tablas productos]-->
- <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">Registrar Nuevo Producto</h4>
-                    </div>
-                    <div class="container mt-4">
-  <h2>Editar Producto</h2>
-  <form method="post">
+<div class="container mt-4">
+    <h2>➕ Crear Categoría</h2>
+    <form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    <a href="{% url 'lista_productos' %}" class="btn btn-secondary">Cancelar</a>
-  </form>
+    <button type="submit" class="btn btn-success mt-2">Guardar</button>
+</form>
 </div>
-                </div>
-            </div>
-        </div>
-    </div>         <!-- [ Main Content ] end -->
-    </div>
-  </div>
 
 {% endblock content %}
 

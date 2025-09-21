@@ -44,6 +44,7 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
+    'widget_tweaks',
     'jazzmin',
     "django.contrib.admin",
     'admin_datta.apps.AdminDattaConfig',
@@ -53,17 +54,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # Serve UI pages
-    "apps.pages",
-
-    # Dynamic DT
-    "apps.dyn_dt",
-
     # Dynamic API
     "apps.dyn_api",
-
-    # Charts
-    "apps.charts",
 
     # Tooling API-GEN
     'rest_framework',            # Include DRF           # <-- NEW 
@@ -85,6 +77,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.core.middleware.LoginRequiredMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -188,7 +181,9 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = '/'
+
+LOGIN_REDIRECT_URL = "/inventario"  # a dónde lo envía cuando se loguea correctamente
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # ### DYNAMIC_DATATB Settings ###

@@ -8,6 +8,11 @@ class ProveedorForm(forms.ModelForm):
         model = Proveedor
         fields = '__all__'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
 class DetalleVentaForm(forms.ModelForm):
     class Meta:
         model = DetalleVenta
@@ -72,6 +77,17 @@ class CompraForm(forms.ModelForm):
             'hora': forms.TimeInput(attrs={'type': 'time'}),
         }
 
+from .models import Categoria
+
+class CategoriaForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = ['nombre', 'descripcion']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la categoría'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Descripción (opcional)', 'rows': 3}),
+        }
+
 class DetalleCompraForm(forms.ModelForm):
     class Meta:
         model = DetalleCompra
@@ -87,7 +103,7 @@ class ProductoForm(forms.ModelForm):
             'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
             'precio_compra': forms.NumberInput(attrs={'class': 'form-control'}),
             'cantidad': forms.NumberInput(attrs={'class': 'form-control'}),
-            'categoria': forms.TextInput(attrs={'class': 'form-control'}),
+            'categoria': forms.Select(attrs={'class': 'form-select'}),
             'unidad_medida': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
@@ -126,3 +142,15 @@ class ConfiguracionForm(forms.ModelForm):
             'nombre_negocio': forms.TextInput(attrs={'class': 'form-control'}),
             'moneda': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+
+from django import forms
+
+class CompraProductoExistenteForm(forms.Form):
+    cantidad = forms.IntegerField(min_value=1, label='Cantidad a comprar')
+    precio_compra = forms.DecimalField(
+        min_value=0,
+        decimal_places=2,
+        label='Precio de compra unitario'
+    )
+

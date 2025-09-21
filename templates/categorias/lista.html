@@ -1,0 +1,67 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Inventario-Registro{% endblock title %}
+
+{% block content %}
+
+  <div class="pc-container">
+    <div class="pc-content">
+      <!-- [ breadcrumb ] start -->
+      <div class="page-header">
+        <div class="page-block">
+          <div class="row align-items-center">
+            <div class="col-md-12">
+              <div class="page-header-title">
+                <h5 class="mb-0">Home</h5>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <ul class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+                <li class="breadcrumb-item" aria-current="page">Register</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="container mt-4">
+    <h2>📂 Lista de Categorías</h2>
+    <a href="{% url 'crear_categoria' %}" class="btn btn-primary mb-3">➕ Nueva Categoría</a>
+
+    {% if categorias %}
+        <ul class="list-group">
+    {% for categoria in categorias %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>
+                <strong>{{ categoria.nombre }}</strong>
+                {% if categoria.descripcion %} - {{ categoria.descripcion }}{% endif %}
+            </span>
+            <span>
+    {% if user.is_superuser %}
+        <a href="{% url 'editar_categoria' categoria.id %}" class="btn btn-warning btn-sm">✏️ Editar</a>
+        <a href="{% url 'eliminar_categoria' categoria.id %}" class="btn btn-danger btn-sm">🗑️ Eliminar</a>
+    {% else %}
+        <button class="btn btn-warning btn-sm disabled">✏️ Editar</button>
+        <button class="btn btn-danger btn-sm disabled">🗑️ Eliminar</button>
+    {% endif %}
+</span>
+        </li>
+    {% endfor %}
+</ul>
+    {% else %}
+        <p>No hay categorías registradas.</p>
+    {% endif %}
+</div>
+
+{% endblock content %}
+
+{% block extra_js %}
+
+<script src="{% static "assets/js/plugins/apexcharts.min.js" %}"></script>
+<script src="{% static "assets/js/plugins/jsvectormap.min.js" %}"></script>
+<script src="{% static "assets/js/plugins/world.js" %}"></script>
+<script src="{% static "assets/js/pages/dashboard-default.js" %}"></script>
+
+{% endblock extra_js %}

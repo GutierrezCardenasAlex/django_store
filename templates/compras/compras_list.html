@@ -1,0 +1,125 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Compras{% endblock title %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<div class="pc-container">
+  <div class="pc-content">
+    <!-- Breadcrumb -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="mb-0">Compras</h5>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="{% url 'index' %}"><i class="bi bi-house-door"></i> Home</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Compras</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabla de Compras -->
+    <div class="card shadow-sm rounded-3 p-4 mt-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0"><i class="bi bi-bag-check me-2"></i>Lista de Compras</h2>
+        <a href="{% url 'crear_compra' %}" class="btn btn-success">
+          <i class="bi bi-plus-circle me-1"></i> Nueva Compra
+        </a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-primary text-center">
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Monto</th>
+              <th>Usuario</th>
+              <th>Proveedor</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            {% for compra in compras %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ compra.fecha }}</td>
+              <td>{{ compra.hora }}</td>
+              <td><span class="badge bg-primary">Bs. {{ compra.monto }}</span></td>
+              <td>{{ compra.usuario.username }}</td>
+              <td>
+                {% if compra.proveedor %}
+                  {{ compra.proveedor.nombre }}
+                {% else %}
+                  Sin proveedor
+                {% endif %}
+              </td>
+              <td>
+                <div class="d-flex justify-content-center gap-1 flex-wrap">
+                  <!-- Botón Editar -->
+                  <a href="{% url 'editar_compra' compra.id %}" class="btn btn-sm btn-warning">
+                    <i class="bi bi-pencil-square"></i> Editar
+                  </a>
+
+                  <!-- Botón Eliminar -->
+                  <form method="post" action="{% url 'eliminar_compra' compra.id %}" class="d-inline delete-compra-form">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-sm btn-outline-danger btn-delete-compra" data-id="{{ compra.id }}">
+                      <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="7" class="text-center text-muted">No hay compras registradas.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Confirmación de eliminación -->
+<script>
+document.querySelectorAll(".btn-delete-compra").forEach(button => {
+  button.addEventListener("click", function () {
+    let form = this.closest("form");
+    let compraId = this.dataset.id;
+
+    Swal.fire({
+      title: `¿Eliminar compra #${compraId}?`,
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        form.submit();
+      }
+    });
+  });
+});
+</script>
+{% endblock extra_js %}

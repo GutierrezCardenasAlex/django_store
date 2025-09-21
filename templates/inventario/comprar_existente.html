@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %}Comprar más - {{ producto.nombre }}{% endblock %}
+
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <div class="pc-container">
+    <div class="pc-content">
+      <!-- [ breadcrumb ] start -->
+      <div class="page-header">
+        <div class="page-block">
+          <div class="row align-items-center">
+            <div class="col-md-12">
+              <div class="page-header-title">
+                <h5 class="mb-0">Home</h5>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <ul class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+                <li class="breadcrumb-item" aria-current="page">Compras Productos</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="container py-5">
+    <h2>Comprar más del producto: <b class="bg-brand-color-1">{{ producto.nombre }}</b></h2>
+    <p><strong>Stock actual:</strong> {{ producto.cantidad }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ producto_form.as_p }}
+        {{ compra_form.as_p }}
+        <button type="submit" class="btn btn-success">Agregar al inventario</button>
+        <a href="{% url 'lista_productos' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+</div>
+</div>
+{% endblock %}

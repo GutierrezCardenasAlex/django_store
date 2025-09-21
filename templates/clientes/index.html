@@ -85,16 +85,24 @@
               <td>{{ cliente.nit_ci }}</td>
               <td>{{ cliente.direccion }}</td>
               <td>{{ cliente.telefono }}</td>
-              <td>
-              <div class="d-flex justify-content-center gap-1 flex-wrap">
-                <button onclick="abrirModalEdicion('{{ cliente.id }}')" class="btn btn-sm btn-outline-primary">
-                  <i class="bi bi-pencil-square"></i> Editar
-                </button>
-                <button onclick="eliminarCliente('{{ cliente.id }}')" class="btn btn-sm btn-outline-danger">
-                  <i class="bi bi-trash"></i> Eliminar
-                </button>
-              </div>
-            </td>
+             <td>
+  <div class="d-flex justify-content-center gap-1 flex-wrap">
+    <!-- Editar: siempre habilitado -->
+    <button onclick="abrirModalEdicion('{{ cliente.id }}')" class="btn btn-sm btn-outline-primary">
+      <i class="bi bi-pencil-square"></i> Editar
+    </button>
+
+    <!-- Eliminar: habilitado solo si es admin, deshabilitado si no -->
+    <button 
+      {% if not user.is_superuser %}disabled{% endif %}
+      {% if user.is_superuser %}onclick="eliminarCliente('{{ cliente.id }}')" {% endif %}
+      class="btn btn-sm btn-outline-danger {% if not user.is_superuser %}disabled{% endif %}">
+      <i class="bi bi-trash"></i> Eliminar
+    </button>
+  </div>
+</td>
+
+
             </tr>
             {% empty %}
             <tr>

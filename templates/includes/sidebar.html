@@ -43,30 +43,6 @@
             <span class="pc-mtext">Dashboard</span>
           </a>
         </li>
-        <!-- <li class="pc-item">
-          <a href="{% url "dynamic_dt" %}" class="pc-link">
-            <span class="pc-micon">
-              <i data-feather="table"></i>
-            </span>
-            <span class="pc-mtext">Dynamic Tables</span>
-          </a>
-        </li>     
-        <li class="pc-item">
-          <a href="{% url "dynamic_api" %}" class="pc-link">
-            <span class="pc-micon">
-              <i data-feather="server"></i>
-            </span>
-            <span class="pc-mtext">Dynamic API</span>
-          </a>
-        </li>       
-        <li class="pc-item">
-          <a href="{% url "charts" %}" class="pc-link">
-            <span class="pc-micon">
-              <i data-feather="bar-chart"></i>
-            </span>
-            <span class="pc-mtext">Charts</span>
-          </a>
-        </li> -->
         <li class="pc-item pc-hasmenu">
           <a href="#!" class="pc-link">
             <span class="pc-micon">
@@ -75,9 +51,8 @@
             <span class="pc-mtext">Bodega</span><span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
-            <li class="pc-item"><a class="pc-link" href="#!">Ajustes de Stock</a></li>
-            <li class="pc-item"><a class="pc-link" href="#!">Categorias</a></li>
-            <li class="pc-item"><a class="pc-link" href="{% url 'crear_compra' %}">Compras</a></li>
+            <li class="pc-item"><a class="pc-link" href="{% url 'lista_categorias' %}">Categorias</a></li>
+            <li class="pc-item"><a class="pc-link" href="{% url 'compras_list' %}">Compras</a></li>
             <li class="pc-item"><a class="pc-link" href="{% url "lista_productos" %}">Productos</a></li>
             <li class="pc-item"><a class="pc-link" href="{% url "proveedor_list" %}">Proveedores</a></li>
           </ul>

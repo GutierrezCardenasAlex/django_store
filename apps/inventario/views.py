@@ -63,9 +63,17 @@ def listar_clientes(request):
 
     search_query = request.GET.get('search', '')
     page_number = request.GET.get('page', 1)
-    per_page = request.GET.get('per_page', total_clientes)
 
+    # ✅ Control de per_page seguro
+    per_page = request.GET.get('per_page', 10)
+    try:
+        per_page = int(per_page)
+        if per_page <= 0:
+            per_page = 10
+    except ValueError:
+        per_page = 10
 
+    # 🔎 Filtro de búsqueda
     if search_query:
         clientes = clientes.filter(
             nombre__icontains=search_query
@@ -82,12 +90,12 @@ def listar_clientes(request):
     paginator = Paginator(clientes, per_page)
     page_obj = paginator.get_page(page_number)
 
-    # FORMULARIO
+    # 📋 Formulario
     if request.method == 'POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('listar_clientes')  # Recarga para ver el nuevo cliente
+            return redirect('listar_clientes')
     else:
         form = ClienteForm()
 
@@ -97,6 +105,7 @@ def listar_clientes(request):
         'search_query': search_query,
         'per_page': per_page,
     })
+
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -278,14 +287,115 @@ def crear_compra(request):
     else:
         producto_form = ProductoForm()
         compra_form = CompraForm(initial={
-            'fecha': bolivia_now.date(),
-            'hora': bolivia_now.time()
+            'fecha': bolivia_now().date(),
+            'hora': bolivia_now().time()
         })
 
     return render(request, 'compras/crear_compra.html', {
         'producto_form': producto_form,
         'compra_form': compra_form,
     })
+
+
+from django.shortcuts import render
+from .models import Compra
+
+def compras_list(request):
+    compras = Compra.objects.select_related('usuario', 'proveedor').order_by('-fecha', '-hora')
+    return render(request, 'compras/compras_list.html', {'compras': compras})
+
+def editar_compra(request, pk):
+    compra = get_object_or_404(Compra, pk=pk)
+    if request.method == "POST":
+        form = CompraForm(request.POST, instance=compra)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Compra #{compra.id} actualizada con éxito.')
+            return redirect('compras_list')  # Redirige a la lista de compras
+    else:
+        form = CompraForm(instance=compra)
+
+    return render(request, 'compras/editar_compra.html', {'form': form, 'compra': compra})
+
+
+def eliminar_compra(request, pk):
+    compra = get_object_or_404(Compra, pk=pk)
+    if request.method == "POST":
+        compra.delete()
+        messages.success(request, f'Compra #{compra.id} eliminada con éxito.')
+        return redirect('compras_list')
+    return redirect('compras_list')  # Redirige si no es POST
+
+from decimal import Decimal
+from django.shortcuts import get_object_or_404, render, redirect
+from .models import Producto, Compra, DetalleCompra, Configuracion
+from .forms import CompraForm, CompraProductoExistenteForm
+from django.utils.timezone import now as bolivia_now
+
+def comprar_producto_existente(request, id):
+    producto = get_object_or_404(Producto, id=id)
+
+    if request.method == 'POST':
+        compra_form = CompraForm(request.POST)
+        producto_form = CompraProductoExistenteForm(request.POST)
+
+        configuracion = Configuracion.objects.first()
+        if not configuracion:
+            return render(request, 'error.html', {'mensaje': 'No hay configuración cargada.'})
+
+        porcentaje_ganancia = configuracion.porcentaje_ganancia
+
+        if compra_form.is_valid() and producto_form.is_valid():
+            cantidad = producto_form.cleaned_data['cantidad']
+            precio_compra = producto_form.cleaned_data['precio_compra']
+
+            # Actualizar cantidad y precio del producto
+            producto.cantidad += cantidad
+
+            if precio_compra != producto.precio_compra:
+                producto.precio_compra = precio_compra
+                producto.precio_venta = precio_compra + (precio_compra * porcentaje_ganancia / Decimal('100'))
+
+            producto.save()
+
+            # Crear la compra
+            compra = compra_form.save(commit=False)
+            compra.usuario = request.user
+            compra.monto = precio_compra * cantidad
+
+            incluir_proveedor = compra_form.cleaned_data.get('incluir_proveedor')
+            if not incluir_proveedor:
+                compra.proveedor = None
+
+            compra.save()
+
+            # Crear detalle de compra
+            DetalleCompra.objects.create(
+                compra=compra,
+                producto=producto,
+                cantidad=cantidad,
+                precio=precio_compra
+            )
+
+            return redirect('lista_productos')
+
+    else:
+        compra_form = CompraForm(initial={
+            'fecha': bolivia_now().date(),
+            'hora': bolivia_now().time()
+        })
+
+        producto_form = CompraProductoExistenteForm(initial={
+            'precio_compra': producto.precio_compra  # Precargamos el precio actual
+        })
+
+    return render(request, 'inventario/comprar_existente.html', {
+        'producto': producto,
+        'compra_form': compra_form,
+        'producto_form': producto_form
+    })
+
+
 
 @login_required
 @transaction.atomic
@@ -415,11 +525,25 @@ from django.shortcuts import render
 from django.db.models import Sum
 from apps.inventario.models import Venta, Compra
 
+from django.db.models import Sum
+from django.shortcuts import render
+from .models import Venta, Compra, Cliente, Proveedor, Producto
+
 def resumen_financiero(request):
     # Totales
     total_ventas = Venta.objects.aggregate(total=Sum('monto'))['total'] or 0
     total_compras = Compra.objects.aggregate(total=Sum('monto'))['total'] or 0
     ganancia = total_ventas - total_compras
+
+    # Conteos
+    total_clientes = Cliente.objects.count()
+    total_proveedores = Proveedor.objects.count()
+    total_productos = Producto.objects.count()
+
+    # Datos para gráfico de stock
+    productos = Producto.objects.all()
+    nombres_productos = [p.nombre for p in productos]
+    stock_productos = [p.cantidad for p in productos]  # asegúrate de que tu modelo tenga el campo 'stock'
 
     # Ventas recientes
     ventas = Venta.objects.all().order_by('-fecha', '-hora')[:10]
@@ -428,9 +552,15 @@ def resumen_financiero(request):
         'total_ventas': total_ventas,
         'total_compras': total_compras,
         'ganancia': ganancia,
-        'ventas': ventas
+        'total_clientes': total_clientes,
+        'total_proveedores': total_proveedores,
+        'total_productos': total_productos,
+        'ventas': ventas,
+        'nombres_productos': nombres_productos,
+        'stock_productos': stock_productos
     }
     return render(request, 'pages/index.html', context)
+
     
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -488,3 +618,59 @@ def editar_configuracion(request):
         'form': form
     })
 
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import Categoria
+from .forms import CategoriaForm
+
+@login_required
+def lista_categorias(request):
+    categorias = Categoria.objects.all()
+    return render(request, "categorias/lista.html", {"categorias": categorias})
+
+@login_required
+def crear_categoria(request):
+    if request.method == "POST":
+        form = CategoriaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Categoría creada correctamente.")
+            return redirect("lista_categorias")
+        else:
+            messages.error(request, "❌ Hubo un error. Revisa los datos.")
+    else:
+        form = CategoriaForm()
+
+    return render(request, "categorias/crear.html", {"form": form})
+
+from django.shortcuts import get_object_or_404
+
+@login_required
+def editar_categoria(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == "POST":
+        form = CategoriaForm(request.POST, instance=categoria)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✏️ Categoría actualizada correctamente.")
+            return redirect("lista_categorias")
+        else:
+            messages.error(request, "❌ Hubo un error al actualizar.")
+    else:
+        form = CategoriaForm(instance=categoria)
+
+    return render(request, "categorias/editar.html", {"form": form, "categoria": categoria})
+
+
+@login_required
+def eliminar_categoria(request, pk):
+    categoria = get_object_or_404(Categoria, pk=pk)
+    if request.method == "POST":
+        categoria.delete()
+        messages.success(request, "🗑️ Categoría eliminada correctamente.")
+        return redirect("lista_categorias")
+
+    return render(request, "categorias/eliminar.html", {"categoria": categoria})

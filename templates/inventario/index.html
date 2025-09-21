@@ -1,161 +1,167 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %}Inventario{% endblock title %}
+{% block title %}Inventario - Productos{% endblock title %}
 
 {% block content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
-  <div class="pc-container">
-    <div class="pc-content">
-      <!-- [ breadcrumb ] start -->
-      <div class="page-header">
-        <div class="page-block">
-          <div class="row align-items-center">
-            <div class="col-md-12">
-              <div class="page-header-title">
-                <h5 class="mb-0">Home</h5>
-              </div>
+<div class="pc-container">
+  <div class="pc-content">
+    <!-- [ Breadcrumb ] -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="mb-0">Inventario</h5>
             </div>
-            <div class="col-md-12">
-              <ul class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
-                <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
-                <!-- <li class="breadcrumb-item" aria-current="page">Home</li> -->
-              </ul>
-            </div>
+          </div>
+          <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="{% url 'index' %}"><i class="bi bi-house-door"></i> Home</a></li>
+              <li class="breadcrumb-item"><a href="javascript:void(0)">Inventario</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Productos</li>
+            </ul>
           </div>
         </div>
       </div>
-    <!------[tablas productos]-->
-    <!-- Botón para abrir el modal -->
-<div class="container py-4">
-
-  <!-- Encabezado -->
-  <div class="row align-items-center mb-4">
-    <div class="col-md-6 col-12 mb-2 mb-md-0">
-      <h2 class="text-center text-md-start">Productos</h2>
     </div>
-    <div class="col-md-6 col-12 text-center text-md-end">
-      <a href="{% url 'crear_compra' %}" class="btn btn-success">
-        <i class="bi bi-plus-circle me-1"></i> Compra Producto
-      </a>
-      <a href="{% url 'crear_venta' %}" class="btn btn-danger">
-        <i class="bi bi-plus-circle me-1"></i> Venta Producto
-      </a>
-    </div>
+
+    <!-- [ Productos ] -->
+    <div class="container py-4">
+      <div class="row align-items-center mb-4">
+        <!-- Título -->
+        <div class="col-lg-4 col-md-12 text-center text-lg-start mb-3 mb-lg-0">
+          <h2 class="mb-0"><i class="bi bi-box-seam me-2"></i>Productos</h2>
+        </div>
+
+        <!-- Buscador -->
+        <div class="col-lg-4 col-md-12 mb-3 mb-lg-0">
+          <input type="text" id="buscador" class="form-control shadow-sm" placeholder="🔍 Buscar producto...">
+        </div>
+
+        <!-- Botones -->
+        <div class="col-lg-4 col-md-12 text-center text-lg-end">
+          <a href="{% url 'crear_compra' %}" class="btn btn-success shadow-sm me-2 mb-2">
+            <i class="bi bi-cart-plus me-1"></i> Compra
+          </a>
+          <a href="{% url 'crear_venta' %}" class="btn btn-danger shadow-sm mb-2">
+            <i class="bi bi-bag-plus me-1"></i> Venta
+          </a>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="table-responsive shadow-sm rounded">
+        <table class="table table-bordered table-hover align-middle mb-0">
+          <thead class="table-primary text-center">
+            <tr>
+              <th>#</th>
+              <th>Nombre</th>
+              <th>Categoría</th>
+              <th>Precio Venta</th>
+              <th>Stock</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="text-center">
+            {% for producto in productos %}
+            <tr class="{% if producto.cantidad == 0 %}table-danger{% endif %}">
+              <td>{{ forloop.counter }}</td>
+              <td class="text-wrap fw-semibold">{{ producto.nombre }}</td>
+              <td class="text-wrap fw-semibold">{{ producto.categoria }}</td>
+              
+              <td><span class="badge bg-primary fs-6">Bs. {{ producto.precio_venta }}</span></td>
+              <td>
+                {% if producto.cantidad > 10 %}
+                  <span class="badge bg-info fs-6">{{ producto.cantidad }}</span>
+                {% elif producto.cantidad > 0 %}
+                  <span class="badge bg-warning text-dark fs-6">{{ producto.cantidad }}</span>
+                {% else %}
+                  <span class="badge bg-danger fs-6">Agotado</span>
+                {% endif %}
+              </td>
+              <td>
+  <div class="d-flex justify-content-center flex-wrap gap-1">
+    <!-- Botón Comprar más -->
+    <a href="{% url 'comprar_producto_existente' producto.id %}" 
+       class="btn btn-sm btn-success d-flex align-items-center gap-1">
+      <i class="bi bi-cart-plus"></i>
+    </a>
+
+    <!-- Botón Eliminar con SweetAlert -->
+    <!-- <form method="post" action="{% url 'eliminar_producto' producto.id %}" class="d-inline delete-product-form">
+      {% csrf_token %}
+      <button type="button" 
+              class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1 btn-delete-product"
+              data-nombre="{{ producto.nombre }}">
+        <i class="bi bi-trash"></i>
+      </button>
+    </form> -->
   </div>
+</td>
 
-  <!-- Tabla -->
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover align-middle shadow-sm">
-      <thead class="table-primary text-center">
-        <tr>
-          <th>#</th>
-          <th>Nombre</th>
-          <th>Categoría</th>
-          <th>Precio</th>
-          <th>Stock</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody class="text-center">
-        {% for producto in productos %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td class="text-wrap">{{ producto.nombre }}</td>
-          <td class="text-wrap">{{ producto.categoria }}</td>
-          <td><span class="badge">Bs. {{ producto.precio_venta }}</span></td>
-          <td>
-            {% if producto.cantidad > 10 %}
-              <span class="badge bg-info">{{ producto.cantidad }}</span>
-            {% elif producto.cantidad > 0 %}
-              <span class="badge bg-warning text-dark">{{ producto.cantidad }}</span>
-            {% else %}
-              <span class="badge bg-danger">Agotado</span>
-            {% endif %}
-          </td>
-          <td>
-            <div class="d-flex justify-content-center flex-wrap gap-1">
-              <!-- Editar -->
-              <a href="{% url 'editar_producto' producto.id %}" class="btn btn-sm btn-outline-primary d-flex align-items-center gap-1">
-                <i class="bi bi-pencil-square"></i><span class="d-none d-sm-inline">Editar</span>
-              </a>
-
-              <!-- Eliminar -->
-              <a href="{% url 'eliminar_producto' producto.id %}" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
-                 onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
-                <i class="bi bi-trash"></i><span class="d-none d-sm-inline">Eliminar</span>
-              </a>
-            </div>
-          </td>
-        </tr>
-        {% empty %}
-        <tr>
-          <td colspan="6" class="text-muted text-center">No hay productos registrados.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-
-<!--modal-->
-<!-- Modal -->
-<div class="modal fade" id="registroModal" tabindex="-1" aria-labelledby="registroModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      
-      <!-- Encabezado -->
-      <div class="modal-header">
-        <h5 class="modal-title" id="registroModalLabel">Registrar Producto</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-muted text-center">No hay productos registrados.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-      
-      <!-- Cuerpo con formulario -->
-      <div class="modal-body">
-        <form id="formularioProducto">
-          <div class="mb-3">
-            <label for="nombreProducto" class="form-label">Nombre del producto</label>
-            <input type="text" class="form-control" id="nombreProducto" required>
-          </div>
-          <div class="mb-3">
-            <label for="categoriaProducto" class="form-label">Categoría</label>
-            <input type="text" class="form-control" id="categoriaProducto" required>
-          </div>
-          <div class="mb-3">
-            <label for="precioProducto" class="form-label">Precio</label>
-            <input type="number" class="form-control" id="precioProducto" required>
-          </div>
-          <div class="mb-3">
-            <label for="stockProducto" class="form-label">Stock</label>
-            <input type="number" class="form-control" id="stockProducto" required>
-          </div>
-        </form>
-      </div>
-      
-      <!-- Pie con botones -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" form="formularioProducto" class="btn btn-primary">Guardar</button>
-      </div>
-      
     </div>
   </div>
 </div>
-          <!-- [ Main Content ] end -->
-    </div>
-  </div>
-
 {% endblock content %}
 
 {% block extra_js %}
 
-<script src="{% static "assets/js/plugins/apexcharts.min.js" %}"></script>
-<script src="{% static "assets/js/plugins/jsvectormap.min.js" %}"></script>
-<script src="{% static "assets/js/plugins/world.js" %}"></script>
-<script src="{% static "assets/js/pages/dashboard-default.js" %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script>
+document.querySelectorAll(".btn-delete-product").forEach(button => {
+  button.addEventListener("click", function () {
+    let form = this.closest("form");
+    let nombreProducto = this.dataset.nombre;
+
+    Swal.fire({
+      title: `¿Eliminar producto "${nombreProducto}"?`,
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        form.submit();
+      }
+    });
+  });
+});
+</script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const input = document.getElementById('buscador');
+    const filas = document.querySelectorAll('tbody tr');
+
+    input.addEventListener('keyup', function () {
+      const filtro = input.value.toLowerCase();
+      filas.forEach(fila => {
+        const textoFila = fila.textContent.toLowerCase();
+        fila.style.display = textoFila.includes(filtro) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+<script src="{% static 'assets/js/plugins/apexcharts.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/jsvectormap.min.js' %}"></script>
+<script src="{% static 'assets/js/plugins/world.js' %}"></script>
+<script src="{% static 'assets/js/pages/dashboard-default.js' %}"></script>
 {% endblock extra_js %}
-

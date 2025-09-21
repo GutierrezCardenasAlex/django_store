@@ -20,6 +20,7 @@
             <ul class="breadcrumb mb-0">
               <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
               <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0)">Ventas</a></li>
             </ul>
           </div>
         </div>
@@ -28,15 +29,26 @@
 
     <!-- Contenido -->
     <div class="container py-4">
-    <div class="col-md-6 col-12 mb-2 mb-md-0">
-      <h2 class="text-center text-md-start">Lista de Ventas</h2>
+  <div class="row align-items-center mb-3">
+    <!-- Título -->
+    <div class="col-lg-4 col-md-12 text-center text-lg-start mb-2 mb-lg-0">
+      <h2 class="mb-0">Ventas</h2>
     </div>
-    <div class="col-md-6 col-12 text-center text-md-end">
+
+    <!-- Buscador -->
+    <div class="col-lg-4 col-md-12 mb-2 mb-lg-0">
+      <input type="text" id="buscador-ventas" class="form-control" placeholder="Buscar por cliente, usuario o fecha...">
+    </div>
+
+    <!-- Botón -->
+    <div class="col-lg-4 col-md-12 text-center text-lg-end">
       <a href="{% url 'crear_venta' %}" class="btn btn-danger">
         <i class="bi bi-plus-circle me-1"></i> Nuevo Registro
       </a>
     </div>
   </div>
+</div>
+
       <table class="table table-bordered table-hover">
         <thead class="table-light">
           <tr>
@@ -93,7 +105,7 @@
                     <th>Precio Unitario</th>
                     <th>Descuento</th>
                     <th>Subtotal</th>
-                    <th>Ganancia Total</th>
+                    <th class="no-print">Ganancia Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -104,14 +116,14 @@
                     <td>Bs. {{ d.precio_unitario|floatformat:2 }}</td>
                     <td>Bs. {{ d.descuento|floatformat:2 }}</td>
                     <td>Bs. {{ d.subtotal|floatformat:2 }}</td>
-                    <td>Bs. {{ d.ganancia_total|floatformat:2 }}</td>
+                    <td class="no-print">Bs. {{ d.ganancia_total|floatformat:2 }}</td>
                   </tr>
                   {% endfor %}
                 </tbody>
               </table>
 
               <p class="text-end mt-3"><strong>Total: Bs. {{ venta.total|floatformat:2 }}</strong></p>
-              <p class="text-end"><strong>Ganancia Total: Bs. {{ venta.ganancia_total|floatformat:2 }}</strong></p>
+              <p class="text-end no-print"><strong>Ganancia Total: Bs. {{ venta.ganancia_total|floatformat:2 }}</strong></p>
             </div>
             <div class="modal-footer no-print">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -189,6 +201,22 @@
   }
 </style>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const buscador = document.getElementById('buscador-ventas');
+    const filas = document.querySelectorAll('tbody tr');
+
+    buscador.addEventListener('keyup', function () {
+      const filtro = buscador.value.toLowerCase();
+
+      filas.forEach(fila => {
+        const texto = fila.textContent.toLowerCase();
+        fila.style.display = texto.includes(filtro) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
 
 <!-- Script de impresión con QR -->
 <script>
@@ -199,7 +227,7 @@ function imprimirModal(modalId) {
   const ventaId = modalId.split('-').pop();
 
   // Ruta del logo
-  const logoURL = `${window.location.origin}/static/img/logo.png`;
+  const logoURL = `${window.location.origin}/static/img/logo.jpg`;
 
   // Generador QR gratuito (puedes usar otro si tienes uno propio)
   const qrURL = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://miempresa.com/ventas/${ventaId}`;
@@ -276,9 +304,9 @@ function imprimirModal(modalId) {
       <body class="p-4">
         <div class="print-header">
           <img src="${logoURL}" alt="Logo de la empresa">
-          <h3>Mi Empresa S.R.L.</h3>
-          <p>Dirección: Av. Ejemplo 123, Ciudad</p>
-          <p>Teléfono: 555-123456 | RIF: J-12345678-9</p>
+          <h3>Mi Negocio Store</h3>
+          <p>Dirección: Calle Pacifico - Potosi</p>
+          <p>Teléfono: 78787878 | RIF: J-12345678-9</p>
           <hr>
         </div>
 
