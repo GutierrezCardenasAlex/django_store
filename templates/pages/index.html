@@ -4,6 +4,20 @@
 {% block title %}Home{% endblock title %}
 
 {% block content %}
+{% if messages %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+{% for message in messages %}
+    Swal.fire({
+        title: "Bienvenido",
+        text: "{{ message }}",
+        icon: "success",
+        confirmButtonText: "Aceptar"
+    });
+{% endfor %}
+</script>
+{% endif %}
+
 
 <div class="pc-container">
   <div class="pc-content">

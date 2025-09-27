@@ -9,13 +9,25 @@ from datetime import datetime
 from django.contrib import messages
 from django.db import transaction
 
-# Create your views here.
+from django.shortcuts import redirect
+from django.contrib import messages
+
+def home_redirect(request):
+    # Mensaje solo una vez por sesión
+    if not request.session.get('mensaje_bienvenida'):
+        messages.success(request, "¡Bienvenido al sistema de inventario!")
+        request.session['mensaje_bienvenida'] = True
+
+    # Redirige a la ruta del dashboard
+    return redirect('/inventario/dashboard/')
+
+
+from django.shortcuts import render
+from .models import Configuracion
 
 def index(request):
-  context = {
-    'segment': 'inventario'
-  }
-  return render(request, "inventario/index.html", context)
+    configuracion = Configuracion.objects.first()  # Obtiene la primera configuración
+    return render(request, "inventario/index.html", {"configuracion": configuracion})
 
 
 def lista_productos(request):
@@ -522,40 +534,48 @@ def eliminar_todas_las_notificaciones(request):
 
 
 from django.shortcuts import render
-from django.db.models import Sum
-from apps.inventario.models import Venta, Compra
-
-from django.db.models import Sum
-from django.shortcuts import render
-from .models import Venta, Compra, Cliente, Proveedor, Producto
+from django.contrib import messages
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+from .models import Venta, DetalleVenta, Compra, Cliente, Proveedor, Producto
 
 def resumen_financiero(request):
-    # Totales
+    # Si la ruta es '/', mostramos solo un mensaje de bienvenida
+    if request.path == '/':
+        messages.info(request, "¡Bienvenido al sistema de inventario!")
+        return render(request, 'pages/bienvenida.html')
+
+    # --- Si la URL es otra (por ejemplo /inventario), carga el dashboard ---
     total_ventas = Venta.objects.aggregate(total=Sum('monto'))['total'] or 0
     total_compras = Compra.objects.aggregate(total=Sum('monto'))['total'] or 0
-    ganancia = total_ventas - total_compras
 
-    # Conteos
+    if total_ventas > 0:
+        ganancia_total = DetalleVenta.objects.annotate(
+            ganancia=ExpressionWrapper(
+                (F('precio_unitario') - F('producto__precio_compra')) * F('cantidad'),
+                output_field=DecimalField(max_digits=10, decimal_places=2)
+            )
+        ).aggregate(total=Sum('ganancia'))['total'] or 0
+    else:
+        ganancia_total = 0
+
     total_clientes = Cliente.objects.count()
     total_proveedores = Proveedor.objects.count()
     total_productos = Producto.objects.count()
 
-    # Datos para gráfico de stock
     productos = Producto.objects.all()
     nombres_productos = [p.nombre for p in productos]
-    stock_productos = [p.cantidad for p in productos]  # asegúrate de que tu modelo tenga el campo 'stock'
+    stock_productos = [p.cantidad for p in productos]
 
-    # Ventas recientes
-    ventas = Venta.objects.all().order_by('-fecha', '-hora')[:10]
+    ventas_recientes = Venta.objects.all().order_by('-fecha', '-hora')[:10]
 
     context = {
         'total_ventas': total_ventas,
         'total_compras': total_compras,
-        'ganancia': ganancia,
+        'ganancia': ganancia_total,
         'total_clientes': total_clientes,
         'total_proveedores': total_proveedores,
         'total_productos': total_productos,
-        'ventas': ventas,
+        'ventas': ventas_recientes,
         'nombres_productos': nombres_productos,
         'stock_productos': stock_productos
     }
@@ -674,3 +694,87 @@ def eliminar_categoria(request, pk):
         return redirect("lista_categorias")
 
     return render(request, "categorias/eliminar.html", {"categoria": categoria})
+
+
+# views.py
+import os
+import signal
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required  # Solo admins pueden detener el servidor
+def detener_servidor(request):
+    pid = os.getpid()  # Obtiene el PID del proceso actual
+    os.kill(pid, signal.SIGINT)  # Envía la señal para detener el servidor
+    return HttpResponse("El servidor Django se está deteniendo...")
+
+
+
+import os
+import signal
+import subprocess
+import sys
+from django.http import HttpResponse
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def reiniciar_servidor(request):
+    if request.method == "POST":
+        python_exe = sys.executable
+        manage_py = os.path.join(os.getcwd(), "manage.py")
+
+        # Levantar un nuevo servidor
+        subprocess.Popen([python_exe, manage_py, "runserver"])
+
+        # Detener el actual
+        os.kill(os.getpid(), signal.SIGINT)
+
+        return HttpResponse("Reiniciando servidor...")
+
+    return HttpResponse("Método no permitido", status=405)
+
+
+from django.shortcuts import render
+from .models import Venta, Compra, Producto
+
+def imprimir_ventas(request):
+    ventas = Venta.objects.all()
+    return render(request, "imprimir/imprimir_ventas_detalle.html", {"ventas": ventas})
+
+def imprimir_compras(request):
+    compras = Compra.objects.all()
+    return render(request, "imprimir/imprimir_compras_detallado.html", {"compras": compras})
+
+def imprimir_productos(request):
+    productos = Producto.objects.all()
+    return render(request, "imprimir/imprimir_productos_detallado.html", {"productos": productos})
+
+
+from django.shortcuts import render
+from .models import Producto, Compra, Venta
+from django.db.models import F, Sum
+
+from .models import Producto, Compra, Venta, Configuracion
+
+def reporte_completo(request):
+    productos = Producto.objects.all()
+    compras = Compra.objects.prefetch_related('detalles')
+    ventas = Venta.objects.prefetch_related('detalles')
+
+    # Calcular totales de Compras y Ventas
+    total_compras = sum(d.precio * d.cantidad for compra in compras for d in compra.detalles.all())
+    total_ventas = sum(d.subtotal for venta in ventas for d in venta.detalles.all())
+
+    # Obtener la configuración del negocio
+    configuracion = Configuracion.objects.first()  # Suponiendo que solo hay un registro de configuración
+
+    context = {
+        'productos': productos,
+        'compras': compras,
+        'ventas': ventas,
+        'total_compras': total_compras,
+        'total_ventas': total_ventas,
+        'configuracion': configuracion
+    }
+    return render(request, "imprimir/reporte_completo.html", context)
+

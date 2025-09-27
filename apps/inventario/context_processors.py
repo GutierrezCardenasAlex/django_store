@@ -1,6 +1,4 @@
-# inventario/context_processors.py
-
-from .models import Notificacion
+from .models import Notificacion,Configuracion
 
 def notificaciones(request):
     if request.user.is_authenticated:
@@ -11,3 +9,8 @@ def notificaciones(request):
             'notificaciones_no_leidas_count': no_leidas
         }
     return {}
+
+def configuracion_global(request):
+    return {
+        "configuracion": Configuracion.objects.first()
+    }

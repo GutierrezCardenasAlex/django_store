@@ -1,0 +1,12 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>🔄 Restaurar Backup desde otra Carpeta</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="filepath">Ruta completa del archivo JSON:</label><br>
+    <input type="text" name="filepath" id="filepath" style="width: 80%;" placeholder="C:/Users/maylex/Desktop/mis_backups/backup.json" required>
+    <br><br>
+    <button type="submit" class="button">Restaurar Backup</button>
+</form>
+<p>⚠ Al restaurar, se sobrescriben los datos actuales.</p>
+{% endblock %}

@@ -19,12 +19,13 @@
             <form method="post" class="card-body">
               {% csrf_token %}
 
-              <div class="text-center">
-                <a href="{% url "index" %}">
-                  <div>
-                    <img src="{% static 'assets/images/favicon.svg' %}" class="img-fluid me-2" alt="logo" style="height: 40px;">
-                    <h1 class="text-primary fs-4 mb-0">TIENDA STORE</h1>
-                  </div>
+              <div class="navbar-wrapper">
+                  <div class="m-header">
+                <a href="{% url 'index' %}" class="b-brand text-primary">
+                  <img src="{% static 'assets/images/favicon.svg' %}" class="img-fluid me-2" alt="logo" style="height: 40px;">
+                  <h1 class="text-primary fs-4 mb-0">
+                    {{ configuracion.nombre_negocio }}
+                  </h1>
                 </a>
               </div>
               <h4 class="text-center f-w-500 mt-4 mb-3">Login</h4>

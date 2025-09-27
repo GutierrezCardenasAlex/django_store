@@ -152,6 +152,10 @@ class Configuracion(models.Model):
 
     nombre_negocio = models.CharField(max_length=100, default="Mi Negocio")
     moneda = models.CharField(max_length=10, default="Bs.")
+    
+    direccion = models.CharField(max_length=200, blank=True, null=True, default="")
+    telefono = models.CharField(max_length=20, blank=True, null=True, default="")
+    nit = models.CharField(max_length=20, blank=True, null=True, default="")
 
     creado = models.DateTimeField(auto_now_add=True)
     actualizado = models.DateTimeField(auto_now=True)
@@ -162,3 +166,13 @@ class Configuracion(models.Model):
     class Meta:
         verbose_name = "Configuración"
         verbose_name_plural = "Configuraciones"
+
+
+
+from django.db import models
+
+class BackupManager(models.Model):
+    class Meta:
+        managed = False  # No crea tabla
+        verbose_name = "Backup Manager"
+        verbose_name_plural = "Backup Manager"

@@ -1,0 +1,73 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>📦 Administrar Respaldos</h1>
+
+{% if es_superusuario %}
+    <p>
+        Crear backup manual:
+        {% for carpeta in carpetas %}
+            <a href="{% url 'admin:create-backup' carpeta %}" class="button default">➕ {{ carpeta }}</a>
+        {% endfor %}
+    </p>
+{% else %}
+    <p style="color:red;">⚠️ Solo los superusuarios pueden crear respaldos.</p>
+{% endif %}
+
+{% if backups %}
+    <table class="admin-backup-table" style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>Nombre del archivo</th>
+                <th>Tipo</th>
+                <th>Fecha y hora</th>
+                <th>Carpeta</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for backup in backups %}
+            <tr>
+                <td>{{ backup.nombre }}</td>
+                <td>
+                    {% if backup.tipo == "Automático" %}
+                        <span style="color: green; font-weight: bold;">{{ backup.tipo }}</span>
+                    {% else %}
+                        <span style="color: blue; font-weight: bold;">{{ backup.tipo }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if backup.fecha %}
+                        {{ backup.fecha|date:"Y-m-d H:i:s" }}
+                    {% else %}
+                        Desconocida
+                    {% endif %}
+                </td>
+                <td>{{ backup.carpeta }}</td>
+                <td>
+                    <a href="{% url 'admin:download-backup' backup.carpeta backup.nombre %}" class="button">⬇ Descargar</a>
+                    {% if es_superusuario %}
+                        <a href="{% url 'admin:restore-backup' backup.carpeta backup.nombre %}" class="button" 
+                           onclick="return confirm('⚠ ¿Seguro que deseas restaurar este respaldo?\nEsto sobrescribirá los datos actuales.')">
+                           🔄 Restaurar
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No hay respaldos disponibles.</p>
+{% endif %}
+
+{% if es_superusuario %}
+<h2>🔄 Restaurar Backup desde otra Carpeta</h2>
+<form method="post" enctype="multipart/form-data" action="{% url 'admin:restore-external' %}">
+    {% csrf_token %}
+    <input type="file" name="backup_file" accept=".json" required>
+    <button type="submit" class="button">Restaurar Backup</button>
+</form>
+<p>⚠ Al restaurar, se sobrescriben los datos actuales.</p>
+{% endif %}
+
+{% endblock %}

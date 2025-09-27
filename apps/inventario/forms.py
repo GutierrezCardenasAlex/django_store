@@ -133,7 +133,10 @@ class ConfiguracionForm(forms.ModelForm):
             'permitir_descuentos',
             'porcentaje_descuento_maximo',
             'nombre_negocio',
-            'moneda'
+            'moneda',
+            'telefono',
+            'direccion',
+            'nit'
         ]
         widgets = {
             'porcentaje_ganancia': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
@@ -141,7 +144,11 @@ class ConfiguracionForm(forms.ModelForm):
             'porcentaje_descuento_maximo': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'nombre_negocio': forms.TextInput(attrs={'class': 'form-control'}),
             'moneda': forms.TextInput(attrs={'class': 'form-control'}),
+            'telefono': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 78787878'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Calle Falsa 123'}),
+            'nit': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: J-12345678-9'}),
         }
+
 
 
 from django import forms

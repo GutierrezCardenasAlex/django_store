@@ -96,6 +96,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "apps.inventario.context_processors.notificaciones",  # ← agrega esto
+                'apps.inventario.context_processors.configuracion_global',
             ],
         },
     },
@@ -182,7 +183,7 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-LOGIN_REDIRECT_URL = "/inventario"  # a dónde lo envía cuando se loguea correctamente
+LOGIN_REDIRECT_URL = "/inventario/"  # a dónde lo envía cuando se loguea correctamente
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
