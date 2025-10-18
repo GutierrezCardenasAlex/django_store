@@ -9,7 +9,7 @@ from django.core import management
 
 from .models import (
     Cliente, Proveedor, Producto, Venta, DetalleVenta,
-    Compra, DetalleCompra, Factura, BackupManager
+    Compra, DetalleCompra, Factura, Trabajo, BackupManager
 )
 
 # ------------------------------
@@ -23,6 +23,7 @@ admin.site.register(DetalleVenta)
 admin.site.register(Compra)
 admin.site.register(DetalleCompra)
 admin.site.register(Factura)
+admin.site.register(Trabajo)
 
 
 # ------------------------------
@@ -55,6 +56,7 @@ MODELOS = [
     f"{APP_NAME}.Factura",
     f"{APP_NAME}.Notificacion",
     f"{APP_NAME}.Configuracion",
+    f"{APP_NAME}.Trabajo",
 ]
 
 

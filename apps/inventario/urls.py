@@ -66,6 +66,12 @@ urlpatterns = [
     # Configuración
     path('configuraciones/', views.editar_configuracion, name='editar_configuracion'),
 
+    #trabajos
+    path('trabajos/', views.lista_trabajos, name='lista_trabajos'),
+    path('trabajos/crear/', views.crear_trabajo, name='crear_trabajo'),
+    path('trabajos/<int:pk>/', views.detalle_trabajo, name='detalle_trabajo'),
+    path('trabajos/<int:pk>/eliminar/', views.eliminar_trabajo, name='eliminar_trabajo'),
+
     #servidor
     path("detener/", detener_servidor, name="detener_servidor"),
     path("reiniciar/", reiniciar_servidor, name="reiniciar_servidor"),

@@ -64,10 +64,12 @@
         <table class="table table-bordered align-middle">
           <thead class="table-light">
             <tr>
-              <th>Producto</th>
-              <th>Cantidad</th>
-              <th>Descuento</th>
-              <th>Subtotal</th>
+              <th>Nombre</th> 
+              <th>Stock</th> 
+               
+              <th>Cantidad</th> 
+              <th>Descuento</th> 
+              <th>Subtotal</th> 
               <th>Eliminar</th>
             </tr>
           </thead>
@@ -240,15 +242,16 @@ function mostrarMensajeSiVacio() {
         const id = $(this).data('id');
         const nombre = $(this).data('nombre');
         const precio = $(this).data('precio');
+        const precio_venta = $(this).data('precio_venta');
         const stock = $(this).data('stock');
 
-        agregarProductoAlForm(id, nombre, precio, stock);
+        agregarProductoAlForm(id, nombre, precio, stock, precio_venta );
 
         $('#buscar-producto').val('');
         $('#resultados-producto').empty().hide();
     });
 
- function agregarProductoAlForm(id, nombre, precio, stock) {
+ function agregarProductoAlForm(id, nombre, precio, stock, precio_venta) {
     // Verificar si ya fue agregado
     let yaExiste = false;
     $('#formset-body .form-row').each(function () {
@@ -275,6 +278,9 @@ function mostrarMensajeSiVacio() {
                     ${nombre}
                 </option>
             </select>
+        </td>
+        <td>
+            <input type="text" class="form-control" readonly value="${stock}">
         </td>
         <td>
             <input type="number" name="form-${index}-cantidad" class="form-control cantidad" 

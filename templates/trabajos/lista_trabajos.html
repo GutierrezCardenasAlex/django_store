@@ -1,0 +1,73 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Registrar Venta{% endblock title %}
+
+{% block content %}
+
+<style>
+  .fila-sin-stock {
+    background-color: #ffe6e6 !important;
+  }
+
+  .stock-info.sin-stock-text {
+    color: red;
+    font-weight: bold;
+  }
+</style>
+
+<div class="pc-container">
+  <div class="pc-content">
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="mb-0">Home</h5>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="{% url "index" %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+              <li class="breadcrumb-item" aria-current="page">Venta</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="container mt-4">
+    <h2>Lista de Trabajos</h2>
+    <a href="{% url 'crear_trabajo' %}" class="btn btn-success mb-2">Crear Trabajo</a>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Costo</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for trabajo in trabajos %}
+            <tr>
+                <td>{{ trabajo.id }}</td>
+                <td>{{ trabajo.nombre }}</td>
+                <td>Bs. {{ trabajo.costo|floatformat:2 }}</td>
+                <td>{{ trabajo.fecha }}</td>
+                <td>
+                    <a href="{% url 'detalle_trabajo' trabajo.id %}" class="btn btn-sm btn-info">Ver</a>
+                    <a href="{% url 'eliminar_trabajo' trabajo.id %}" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</div>
+</div>
+</div>
+{% endblock %}

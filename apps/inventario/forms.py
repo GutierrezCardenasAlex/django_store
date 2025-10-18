@@ -97,7 +97,7 @@ class DetalleCompraForm(forms.ModelForm):
 class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
-        fields = ['nombre','descripcion','precio_compra','cantidad','categoria','unidad_medida']  # ajusta según tu modelo
+        fields = ['nombre','descripcion','precio_compra','cantidad','categoria','unidad_medida','ganancia']  # ajusta según tu modelo
         widgets = {
             'nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'descripcion': forms.Textarea(attrs={'class': 'form-control'}),
@@ -105,6 +105,7 @@ class ProductoForm(forms.ModelForm):
             'cantidad': forms.NumberInput(attrs={'class': 'form-control'}),
             'categoria': forms.Select(attrs={'class': 'form-select'}),
             'unidad_medida': forms.TextInput(attrs={'class': 'form-control'}),
+            'ganancia': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
 class ClienteForm(forms.ModelForm):
@@ -155,9 +156,29 @@ from django import forms
 
 class CompraProductoExistenteForm(forms.Form):
     cantidad = forms.IntegerField(min_value=1, label='Cantidad a comprar')
+    ganancia = forms.DecimalField(
+        min_value=0,
+        decimal_places=2,
+        label='Porcentaje de ganancia (%)'
+    )
     precio_compra = forms.DecimalField(
         min_value=0,
         decimal_places=2,
         label='Precio de compra unitario'
     )
 
+
+
+from django import forms
+from .models import Trabajo
+
+class TrabajoForm(forms.ModelForm):
+    class Meta:
+        model = Trabajo
+        fields = ['nombre', 'descripcion', 'costo', 'fecha']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del trabajo'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Descripción opcional'}),
+            'costo': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01', 'placeholder': 'Costo del trabajo'}),
+            'fecha': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+        }

@@ -56,8 +56,9 @@
           </a>
           <ul class="pc-submenu">
             <li class="pc-item"><a class="pc-link" href="{% url 'listar_clientes' %}"><i data-feather="users"></i> Clientes</a></li>
-            <li class="pc-item"><a class="pc-link" href="#!"><i data-feather="gift"></i> Promociones</a></li>
+            
             <li class="pc-item"><a class="pc-link" href="{% url 'ventas_list' %}"><i data-feather="shopping-cart"></i> Ventas</a></li>
+           <li class="pc-item"><a class="pc-link" href="{% url 'lista_trabajos' %}"><i data-feather="briefcase"></i> Trabajos</a></li>
           </ul>
         </li>
 
@@ -69,10 +70,10 @@
             <span class="pc-arrow"><i class="ti ti-chevron-right"></i></span>
           </a>
           <ul class="pc-submenu">
-            <li class="pc-item"><a href="{% url 'imprimir_ventas' %}" class="pc-link" target="_blank"><i data-feather="file-text"></i> 🧾 Imprimir Ventas</a></li>
-            <li class="pc-item"><a href="{% url 'imprimir_compras' %}" class="pc-link" target="_blank"><i data-feather="shopping-bag"></i> 📦 Imprimir Compras</a></li>
-            <li class="pc-item"><a href="{% url 'imprimir_productos' %}" class="pc-link" target="_blank"><i data-feather="package"></i> 🏷️ Imprimir Productos</a></li>
-            <li class="pc-item"><a href="{% url 'reporte_completo' %}" class="pc-link" target="_blank"><i data-feather="activity"></i> 📊 Reporte Completo</a></li>
+            <li class="pc-item"><a href="{% url 'imprimir_ventas' %}" class="pc-link"><i data-feather="file-text"></i> 🧾 Imprimir Ventas</a></li>
+            <li class="pc-item"><a href="{% url 'imprimir_compras' %}" class="pc-link"><i data-feather="shopping-bag"></i> 📦 Imprimir Compras</a></li>
+            <li class="pc-item"><a href="{% url 'imprimir_productos' %}" class="pc-link"><i data-feather="package"></i> 🏷️ Imprimir Productos</a></li>
+            <li class="pc-item"><a href="{% url 'reporte_completo' %}" class="pc-link"><i data-feather="activity"></i> 📊 Reporte Completo</a></li>
           </ul>
         </li>
 

@@ -39,6 +39,7 @@ class Producto(models.Model):
     cantidad = models.IntegerField(default=0)
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True)
     unidad_medida = models.CharField(max_length=20, blank=True, null=True)
+    ganancia = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self):
         return self.nombre
@@ -176,3 +177,16 @@ class BackupManager(models.Model):
         managed = False  # No crea tabla
         verbose_name = "Backup Manager"
         verbose_name_plural = "Backup Manager"
+
+
+from django.db import models
+from django.utils import timezone
+
+class Trabajo(models.Model):
+    nombre = models.CharField(max_length=150, help_text="Nombre del trabajo o servicio")
+    descripcion = models.TextField(blank=True, null=True, help_text="Detalles opcionales")
+    costo = models.DecimalField(max_digits=10, decimal_places=2, help_text="Costo del trabajo")
+    fecha = models.DateField(default=timezone.now, help_text="Fecha de registro del trabajo")
+
+    def __str__(self):
+        return f"{self.nombre} - Bs. {self.costo}"

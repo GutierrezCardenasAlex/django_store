@@ -60,9 +60,11 @@
               <th>#</th>
               <th>Nombre</th>
               <th>Categoría</th>
+              <th>Porcentaje de Ganancia %</th>
+              <th>Precio Compra</th>
               <th>Precio Venta</th>
               <th>Stock</th>
-              <th>Acciones</th>
+              <th>Opciones</th>
             </tr>
           </thead>
           <tbody class="text-center">
@@ -71,7 +73,8 @@
               <td>{{ forloop.counter }}</td>
               <td class="text-wrap fw-semibold">{{ producto.nombre }}</td>
               <td class="text-wrap fw-semibold">{{ producto.categoria }}</td>
-              
+              <td class="text-wrap fw-semibold">{{ producto.ganancia  }}</td>
+              <td><span class="badge bg-primary fs-6">Bs. {{ producto.precio_compra }}</span></td>
               <td><span class="badge bg-primary fs-6">Bs. {{ producto.precio_venta }}</span></td>
               <td>
                 {% if producto.cantidad > 10 %}

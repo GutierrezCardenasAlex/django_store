@@ -1,0 +1,39 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Registrar Trabajo{% endblock title %}
+
+{% block content %}
+<div class="pc-container">
+  <div class="pc-content">
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="mb-0">Home</h5>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <ul class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="{% url 'index' %}">Home</a></li>
+              <li class="breadcrumb-item"><a href="javascript: void(0)">Inventario</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Trabajo</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<div class="container mt-4">
+    <h2>Detalle del Trabajo</h2>
+    <p><strong>Nombre:</strong> {{ trabajo.nombre }}</p>
+    <p><strong>Descripción:</strong> {{ trabajo.descripcion }}</p>
+    <p><strong>Costo:</strong> Bs. {{ trabajo.costo|floatformat:2 }}</p>
+    <p><strong>Fecha:</strong> {{ trabajo.fecha }}</p>
+    <a href="{% url 'lista_trabajos' %}" class="btn btn-secondary">Volver</a>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

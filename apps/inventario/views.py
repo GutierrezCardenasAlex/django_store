@@ -266,7 +266,7 @@ def crear_compra(request):
 
             # Asignar precio_venta = precio_compra antes de guardar
             #estimacion a ganar es de un 20 %
-            producto.precio_venta = producto.precio_compra  + (producto.precio_compra * porcentaje_ganancia / Decimal('100')) 
+            producto.precio_venta = producto.precio_compra  + (producto.precio_compra * producto.ganancia / Decimal('100')) 
             producto.save()
 
             # Calcular monto total
@@ -350,23 +350,22 @@ def comprar_producto_existente(request, id):
     if request.method == 'POST':
         compra_form = CompraForm(request.POST)
         producto_form = CompraProductoExistenteForm(request.POST)
-
         configuracion = Configuracion.objects.first()
         if not configuracion:
             return render(request, 'error.html', {'mensaje': 'No hay configuración cargada.'})
 
-        porcentaje_ganancia = configuracion.porcentaje_ganancia
-
         if compra_form.is_valid() and producto_form.is_valid():
             cantidad = producto_form.cleaned_data['cantidad']
             precio_compra = producto_form.cleaned_data['precio_compra']
+            ganancia = producto_form.cleaned_data['ganancia']
 
             # Actualizar cantidad y precio del producto
             producto.cantidad += cantidad
+            producto.ganancia = ganancia
 
-            if precio_compra != producto.precio_compra:
-                producto.precio_compra = precio_compra
-                producto.precio_venta = precio_compra + (precio_compra * porcentaje_ganancia / Decimal('100'))
+            producto.precio_compra = precio_compra
+            producto.precio_venta = precio_compra + (precio_compra * ganancia / Decimal('100'))
+                
 
             producto.save()
 
@@ -398,7 +397,8 @@ def comprar_producto_existente(request, id):
         })
 
         producto_form = CompraProductoExistenteForm(initial={
-            'precio_compra': producto.precio_compra  # Precargamos el precio actual
+            'precio_compra': producto.precio_compra,
+            'ganancia': producto.ganancia  
         })
 
     return render(request, 'inventario/comprar_existente.html', {
@@ -486,13 +486,13 @@ def buscar_productos(request):
 
 def ventas_list(request):
     ventas = Venta.objects.prefetch_related('detalles__producto').all().order_by('-fecha', '-hora')
-    
-    # Puedes calcular totales y ganancias si no están en el modelo, ejemplo:
+
     for venta in ventas:
         venta.total = sum(det.subtotal for det in venta.detalles.all())
         venta.ganancia_total = sum(det.ganancia_total for det in venta.detalles.all())
-    
+
     return render(request, 'ventas/ventas_list.html', {'ventas': ventas})
+
 
 def detalle_ventas(request, pk):
     venta = get_object_or_404(Venta, pk=pk)
@@ -536,7 +536,7 @@ def eliminar_todas_las_notificaciones(request):
 from django.shortcuts import render
 from django.contrib import messages
 from django.db.models import Sum, F, ExpressionWrapper, DecimalField
-from .models import Venta, DetalleVenta, Compra, Cliente, Proveedor, Producto
+from .models import Venta, DetalleVenta, Compra, Cliente, Proveedor, Producto, Trabajo
 
 def resumen_financiero(request):
     # Si la ruta es '/', mostramos solo un mensaje de bienvenida
@@ -547,6 +547,7 @@ def resumen_financiero(request):
     # --- Si la URL es otra (por ejemplo /inventario), carga el dashboard ---
     total_ventas = Venta.objects.aggregate(total=Sum('monto'))['total'] or 0
     total_compras = Compra.objects.aggregate(total=Sum('monto'))['total'] or 0
+    total_trabajos_todos = Trabajo.objects.aggregate(total=Sum('costo'))['total'] or 0
 
     if total_ventas > 0:
         ganancia_total = DetalleVenta.objects.annotate(
@@ -561,6 +562,7 @@ def resumen_financiero(request):
     total_clientes = Cliente.objects.count()
     total_proveedores = Proveedor.objects.count()
     total_productos = Producto.objects.count()
+    total_trabajos = Trabajo.objects.count()
 
     productos = Producto.objects.all()
     nombres_productos = [p.nombre for p in productos]
@@ -571,10 +573,12 @@ def resumen_financiero(request):
     context = {
         'total_ventas': total_ventas,
         'total_compras': total_compras,
+        'total_trabajos_todos': total_trabajos_todos,
         'ganancia': ganancia_total,
         'total_clientes': total_clientes,
         'total_proveedores': total_proveedores,
         'total_productos': total_productos,
+        'total_trabajos': total_trabajos,
         'ventas': ventas_recientes,
         'nombres_productos': nombres_productos,
         'stock_productos': stock_productos
@@ -777,4 +781,42 @@ def reporte_completo(request):
         'configuracion': configuracion
     }
     return render(request, "imprimir/reporte_completo.html", context)
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Trabajo
+from .forms import TrabajoForm
+from django.contrib import messages
+
+# Lista de trabajos
+def lista_trabajos(request):
+    trabajos = Trabajo.objects.all().order_by('-fecha')
+    return render(request, 'trabajos/lista_trabajos.html', {'trabajos': trabajos})
+
+# Crear trabajo
+def crear_trabajo(request):
+    if request.method == 'POST':
+        form = TrabajoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Trabajo creado correctamente.')
+            return redirect('lista_trabajos')
+    else:
+        form = TrabajoForm()
+    return render(request, 'trabajos/crear_trabajo.html', {'form': form})
+
+# Ver detalles de un trabajo
+def detalle_trabajo(request, pk):
+    trabajo = get_object_or_404(Trabajo, pk=pk)
+    return render(request, 'trabajos/detalle_trabajo.html', {'trabajo': trabajo})
+
+# Eliminar trabajo
+def eliminar_trabajo(request, pk):
+    trabajo = get_object_or_404(Trabajo, pk=pk)
+    if request.method == 'POST':
+        trabajo.delete()
+        messages.success(request, 'Trabajo eliminado correctamente.')
+        return redirect('lista_trabajos')
+    return render(request, 'trabajos/eliminar_trabajo.html', {'trabajo': trabajo})
+
 

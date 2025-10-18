@@ -67,3 +67,40 @@
 [s b 27/09/2025 12:39:08,10] Servidor levantado manualmente 
 [s b 27/09/2025 12:55:15,13] Servidor detenido 
 [s b 27/09/2025 12:55:37,56] Salida del sistema 
+[mi‚ 01/10/2025  9:08:58,42] Entorno virtual activado 
+[mi‚ 01/10/2025  9:08:58,43] Instalando dependencias desde requirements.txt 
+[mi‚ 01/10/2025  9:09:28,89] Servidor levantado manualmente 
+[mi‚ 01/10/2025 12:28:00,16] Entorno virtual activado 
+[mi‚ 01/10/2025 12:28:00,17] Instalando dependencias desde requirements.txt 
+[mi‚ 01/10/2025 12:28:29,24] Iniciando migraciones 
+[mi‚ 01/10/2025 12:28:42,28] Migraciones completadas 
+[mi‚ 01/10/2025 12:28:59,67] Servidor levantado manualmente 
+[mi‚ 01/10/2025 22:45:14,09] Entorno virtual activado 
+[mi‚ 01/10/2025 22:45:14,09] Instalando dependencias desde requirements.txt 
+[mi‚ 01/10/2025 22:46:27,51] Servidor levantado manualmente 
+[jue 02/10/2025 22:36:49,88] Entorno virtual activado 
+[jue 02/10/2025 22:36:49,88] Instalando dependencias desde requirements.txt 
+[jue 02/10/2025 22:38:03,34] Servidor levantado manualmente 
+[jue 02/10/2025 23:59:52,85] Entorno virtual activado 
+[jue 02/10/2025 23:59:52,85] Instalando dependencias desde requirements.txt 
+[vie 03/10/2025  0:00:27,88] Iniciando migraciones 
+[vie 03/10/2025  0:00:40,51] Migraciones completadas 
+[vie 03/10/2025  0:00:50,35] Servidor levantado manualmente 
+[vie 03/10/2025 10:54:17,49] Entorno virtual activado 
+[vie 03/10/2025 10:54:17,50] Instalando dependencias desde requirements.txt 
+[vie 03/10/2025 10:55:19,14] Servidor levantado manualmente 
+[vie 03/10/2025 14:31:22,07] Entorno virtual activado 
+[vie 03/10/2025 14:31:22,07] Instalando dependencias desde requirements.txt 
+[vie 03/10/2025 14:32:30,76] Servidor levantado manualmente 
+[vie 03/10/2025 18:50:35,53] Entorno virtual activado 
+[vie 03/10/2025 18:50:35,54] Instalando dependencias desde requirements.txt 
+[vie 03/10/2025 18:51:45,79] Servidor levantado manualmente 
+[vie 03/10/2025 19:09:08,00] Entorno virtual activado 
+[vie 03/10/2025 19:09:08,00] Instalando dependencias desde requirements.txt 
+[vie 03/10/2025 19:10:50,06] ConfiguraciÃ³n completada, .env creado y carpetas listas 
+[vie 03/10/2025 19:12:04,25] ConfiguraciÃ³n completada, .env creado y carpetas listas 
+[vie 03/10/2025 19:12:11,28] Iniciando migraciones 
+[vie 03/10/2025 19:12:20,84] Migraciones completadas 
+[vie 03/10/2025 19:13:07,83] Creando superusuario admin_alex 
+[vie 03/10/2025 19:13:11,10] Superusuario admin_alex creado 
+[vie 03/10/2025 19:13:21,70] Servidor levantado manualmente 

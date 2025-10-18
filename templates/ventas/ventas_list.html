@@ -52,13 +52,12 @@
       <table class="table table-bordered table-hover">
         <thead class="table-light">
           <tr>
-            <th>ID</th>
+            <th>Nro</th>
+            <th>Productos</th>
             <th>Fecha</th>
             <th>Cliente</th>
-            <th>Usuario</th>
             <th>Método Pago</th>
             <th>Total</th>
-            <th>Ganancia</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -66,17 +65,21 @@
           {% for venta in ventas %}
           <tr>
             <td>{{ venta.id }}</td>
-            <td>{{ venta.fecha }} {{ venta.hora|time:"H:i" }}</td>
+            <td>
+              {% for d in venta.detalles.all %}
+                <span class="badge bg-primary">{{ d.producto.nombre }}</span>
+              {% endfor %}
+            </td>
+            <td>{{ venta.fecha }} </td>
             <td>{{ venta.cliente }}</td>
-            <td>{{ venta.usuario }}</td>
             <td>{{ venta.get_metodo_pago_display }}</td>
             <td>Bs. {{ venta.total|floatformat:2 }}</td>
-            <td>Bs. {{ venta.ganancia_total|floatformat:2 }}</td>
             <td>
-              <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detalleVentaModal{{ venta.id }}">
-                Ver Detalles
-              </button>
-            </td>
+  <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#detalleVentaModal{{ venta.id }}">
+    <i class="bi bi-eye"></i> Ver
+  </button>
+</td>
+
           </tr>
           {% endfor %}
         </tbody>

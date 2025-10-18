@@ -41,222 +41,267 @@
       </div>
     </div>
     <!-- [ breadcrumb ] end -->
-
     <!-- [ Main Content ] start -->
-    <div class="row">
+       <style>
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .f-30 { font-size: 30px; }
+    .f-w-300 { font-weight: 300; }
+    .m-r-10 { margin-right: 10px; }
+    .mb-4 { margin-bottom: 1.5rem !important; }
+    .progress { border-radius: 10px; }
+    .nav-tabs .nav-link { border: none; }
+    .nav-tabs .nav-link.active {
+      border-bottom: 3px solid #0d6efd;
+      font-weight: bold;
+      color: #0d6efd;
+    }
+    .list-group-item-warning { background-color: #fff3cd; }
+    .list-group-item-light { background-color: #f8f9fa; }
+  </style>
+</head>
+<body class="bg-light">
 
-      <!-- Tarjeta Total Ventas -->
-      <div class="col-md-6 col-xl-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="mb-4">Total de Ventas</h6>
-            <div class="row d-flex align-items-center">
-              <div class="col-9">
-                <h3 class="f-w-300 d-flex align-items-center m-b-0">
-                  <i class="feather icon-arrow-up text-success f-30 m-r-10"></i>
-                  Bs. {{ total_ventas|floatformat:2|intcomma }}
-                </h3>
+<div class="container py-4">
+
+<!-- ===== Panel de Actividad ===== -->
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5>Panel de Actividad</h5>
+        <!-- Tabs -->
+        <ul class="nav nav-tabs card-header-tabs" id="actividadTabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="resumen-tab" data-bs-toggle="tab" href="#resumen" role="tab">Resumen</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="notificaciones-tab" data-bs-toggle="tab" href="#notificaciones" role="tab">Notificaciones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="ventas-tab" data-bs-toggle="tab" href="#ventas" role="tab">Ventas Recientes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="grafica-tab" data-bs-toggle="tab" href="#grafica" role="tab">Gráfica</a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body tab-content">
+        
+        <!-- ===== Resumen ===== -->
+        <div class="tab-pane fade show active" id="resumen" role="tabpanel">
+          <div class="row">
+              <!-- ================== FILA 1: TOTALES PRINCIPALES ================== --
+    <!-- Total Ventas -->
+    <div class="col-md-6 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="mb-4">Total de Ventas</h6>
+          <div class="d-flex align-items-center">
+            <i class="feather icon-arrow-up text-success f-30 m-r-10"></i>
+            <h3 class="f-w-300 mb-0">Bs. {{ total_ventas|floatformat:2 }}</h3>
+          </div>
+          <p class="text-muted small mt-2">Crecimiento mensual: 67%</p>
+          <div class="progress" style="height: 7px;">
+            <div class="progress-bar bg-success" role="progressbar" style="width: 67%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Compras -->
+    <div class="col-md-6 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="mb-4">Total de Compras</h6>
+          <div class="d-flex align-items-center">
+            <i class="feather icon-arrow-down text-danger f-30 m-r-10"></i>
+            <h3 class="f-w-300 mb-0">Bs. {{ total_compras|floatformat:2 }}</h3>
+          </div>
+          <p class="text-muted small mt-2">Variación mensual: 36%</p>
+          <div class="progress" style="height: 7px;">
+            <div class="progress-bar bg-danger" role="progressbar" style="width: 36%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Ganancia -->
+    <div class="col-md-6 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="mb-4">Total de Ganancias</h6>
+          <div class="d-flex align-items-center">
+            <i class="feather icon-arrow-up text-success f-30 m-r-10"></i>
+            <h3 class="f-w-300 mb-0">Bs. {{ ganancia|floatformat:2 }}</h3>
+          </div>
+          <p class="text-muted small mt-2">Margen estimado: 80%</p>
+          <div class="progress" style="height: 7px;">
+            <div class="progress-bar bg-success" role="progressbar" style="width: 80%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Trabajos -->
+    <div class="col-md-6 col-xl-3">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="mb-4">Total de Trabajos</h6>
+          <div class="d-flex align-items-center">
+            <i class="feather icon-briefcase text-primary f-30 m-r-10"></i>
+            <h3 class="f-w-300 mb-0">{{ total_trabajos_todos }}</h3>
+          </div>
+          <p class="text-muted small mt-2">Ejecución: 70%</p>
+          <div class="progress" style="height: 7px;">
+            <div class="progress-bar bg-primary" role="progressbar" style="width: 70%;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================== FILA 2: CANTIDADES ================== -->
+  <div class="row g-3 mb-4">
+    <!-- Clientes -->
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="feather icon-users text-primary f-30 mb-2"></i>
+          <h6 class="mb-1">Clientes</h6>
+          <h3 class="f-w-300 text-primary">{{ total_clientes }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Proveedores -->
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="feather icon-truck text-warning f-30 mb-2"></i>
+          <h6 class="mb-1">Proveedores</h6>
+          <h3 class="f-w-300 text-warning">{{ total_proveedores }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productos -->
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="feather icon-box text-success f-30 mb-2"></i>
+          <h6 class="mb-1">Productos</h6>
+          <h3 class="f-w-300 text-success">{{ total_productos }}</h3>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trabajos -->
+    <div class="col-md-3">
+      <div class="card text-center">
+        <div class="card-body">
+          <i class="feather icon-briefcase text-info f-30 mb-2"></i>
+          <h6 class="mb-1">Trabajos</h6>
+          <h3 class="f-w-300 text-info">{{ total_trabajos }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+          </div>
+
+        <!-- ===== Notificaciones ===== -->
+        <div class="tab-pane fade" id="notificaciones" role="tabpanel">
+          <ul class="list-group mb-4">
+            {% for notificacion in notificaciones %}
+            <li class="list-group-item d-flex justify-content-between align-items-start 
+              {% if notificacion.leida %}list-group-item-light{% else %}list-group-item-warning{% endif %}">
+              <div class="ms-2 me-auto">
+                <div class="fw-bold">{{ notificacion.producto.nombre }}</div>
+                {{ notificacion.mensaje }}
+                <div class="text-muted small">{{ notificacion.fecha|date:"d M Y H:i" }}</div>
               </div>
-              <div class="col-3 text-end">
-                <p class="m-b-0">67%</p>
-              </div>
-            </div>
-            <div class="progress m-t-30" style="height: 7px;">
-              <div class="progress-bar bg-brand-color-1" role="progressbar" style="width: 50%;" aria-valuenow="50"
-                aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
+              {% if notificacion.leida %}
+              <span class="badge bg-success rounded-pill">Leída</span>
+              {% else %}
+              <span class="badge bg-danger rounded-pill">Nueva</span>
+              {% endif %}
+            </li>
+            {% empty %}
+            <li class="list-group-item">No hay notificaciones.</li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <!-- ===== Ventas Recientes ===== -->
+        <div class="tab-pane fade" id="ventas" role="tabpanel">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="thead-light">
+                <tr>
+                  <th>Usuario</th>
+                  <th>Detalles</th>
+                  <th>Fecha y Hora</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for venta in ventas %}
+                <tr class="unread">
+                  <td>
+                    <img class="rounded-circle" style="width:40px;" src="{% static 'assets/images/user/avatar-3.jpg' %}" alt="user">
+                  </td>
+                  <td>
+                    <h6 class="mb-1">Usuario: {{ venta.usuario.username }}</h6>
+                    <p class="m-0">
+                      Monto: <strong>${{ venta.monto }}</strong><br>
+                      Método: {{ venta.get_metodo_pago_display }}
+                    </p>
+                  </td>
+                  <td>
+                    <h6 class="text-muted">
+                      <i class="fas fa-circle text-success f-10 m-r-15"></i>
+                      {{ venta.fecha|date:"d M" }} {{ venta.hora|time:"H:i" }}
+                    </h6>
+                  </td>
+                  <td>
+                    <a href="#!" class="badge me-2 bg-danger text-white f-12">Eliminar</a>
+                    <a href="#!" class="badge me-2 bg-success text-white f-12">Ver</a>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center">No hay ventas recientes.</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
 
-      <!-- Tarjeta Total Compras -->
-      <div class="col-md-6 col-xl-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="mb-4">Total de Compras</h6>
-            <div class="row d-flex align-items-center">
-              <div class="col-9">
-                <h3 class="f-w-300 d-flex align-items-center  m-b-0">
-                  <i class="feather icon-arrow-down text-danger f-30 m-r-10"></i>
-                  Bs. {{ total_compras|floatformat:2|intcomma }}
-                </h3>
-              </div>
-              <div class="col-3 text-end">
-                <p class="m-b-0">36%</p>
-              </div>
-            </div>
-            <div class="progress m-t-30" style="height: 7px;">
-              <div class="progress-bar bg-brand-color-2" role="progressbar" style="width: 35%;" aria-valuenow="35"
-                aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-          </div>
+        <!-- ===== Gráfica ===== -->
+        <div class="tab-pane fade" id="grafica" role="tabpanel">
+          <div id="stockChart"></div>
         </div>
+
       </div>
+    </div>
+  </div>
+</div>
 
-      <!-- Tarjeta Total Ganancia -->
-      <div class="col-md-12 col-xl-4">
-        <div class="card">
-          <div class="card-body">
-            <h6 class="mb-4">Total de Ganancias</h6>
-            <div class="row d-flex align-items-center">
-              <div class="col-9">
-                <h3 class="f-w-300 d-flex align-items-center  m-b-0">
-                  <i class="feather icon-arrow-up text-success f-30 m-r-10"></i>
-                  Bs. {{ ganancia|floatformat:2|intcomma }}
-                </h3>
-              </div>
-              <div class="col-3 text-end">
-                <p class="m-b-0">80%</p>
-              </div>
-            </div>
-            <div class="progress m-t-30" style="height: 7px;">
-              <div class="progress-bar bg-brand-color-1" role="progressbar" style="width: 70%;" aria-valuenow="70"
-                aria-valuemin="0" aria-valuemax="100"></div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Tarjeta Clientes -->
-      <div class="col-md-4 col-xl-4">
-        <div class="card text-center">
-          <div class="card-body">
-            <i class="feather icon-users text-primary f-30 mb-2"></i>
-            <h6 class="mb-1">Clientes</h6>
-            <h3 class="f-w-300 text-primary">{{ total_clientes }}</h3>
-          </div>
-        </div>
-      </div>
 
-      <!-- Tarjeta Proveedores -->
-      <div class="col-md-4 col-xl-4">
-        <div class="card text-center">
-          <div class="card-body">
-            <i class="feather icon-truck text-warning f-30 mb-2"></i>
-            <h6 class="mb-1">Proveedores</h6>
-            <h3 class="f-w-300 text-warning">{{ total_proveedores }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tarjeta Productos -->
-      <div class="col-md-4 col-xl-4">
-        <div class="card text-center">
-          <div class="card-body">
-            <i class="feather icon-box text-success f-30 mb-2"></i>
-            <h6 class="mb-1">Productos</h6>
-            <h3 class="f-w-300 text-success">{{ total_productos }}</h3>
-          </div>
-        </div>
-      </div>
-
-      <!-- Gráfico de Stock -->
-      <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <h5>Stock de Productos</h5>
-          </div>
-          <div class="card-body">
-            <div id="stockChart"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Notificaciones -->
-      <div class="col-xl-4 col-md-6">
-        <div class="card user-list">
-          <div class="card-header">
-            <h5>Notificaciones</h5>
-          </div>
-
-          <div class="card-body">
-            <ul class="list-group mb-4">
-              {% for notificacion in notificaciones %}
-              <li
-                class="list-group-item d-flex justify-content-between align-items-start {% if notificacion.leida %}list-group-item-light{% else %}list-group-item-warning{% endif %}">
-                <div class="ms-2 me-auto">
-                  <div class="fw-bold">{{ notificacion.producto.nombre }}</div>
-                  {{ notificacion.mensaje }}
-                  <div class="text-muted small">{{ notificacion.fecha|date:"d M Y H:i" }}</div>
-                </div>
-                {% if notificacion.leida %}
-                <span class="badge bg-success rounded-pill">Leída</span>
-                {% else %}
-                <span class="badge bg-danger rounded-pill">Nueva</span>
-                {% endif %}
-              </li>
-              {% empty %}
-              <li class="list-group-item">No hay notificaciones.</li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Ventas Recientes -->
-      <div class="col-xl-8 col-md-6">
-        <div class="card Recent-Users">
-          <div class="card-header">
-            <h5>Recientes Ventas</h5>
-          </div>
-          <div class="card-body px-0 py-3">
-            <div class="table-responsive">
-              <table class="table table-hover">
-                <thead class="thead-light">
-                  <tr>
-                    <th>Usuario</th>
-                    <th>Detalles</th>
-                    <th>Fecha y Hora</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for venta in ventas %}
-                  <tr class="unread">
-                    <td>
-                      <img class="rounded-circle" style="width:40px;" src="{% static 'assets/images/user/avatar-3.jpg' %}"
-                        alt="user">
-                    </td>
-                    <td>
-                      <h6 class="mb-1">Usuario: {{ venta.usuario.username }}</h6>
-                      <p class="m-0">
-                        Monto: <strong>${{ venta.monto }}</strong><br>
-                        Método: {{ venta.get_metodo_pago_display }}
-                      </p>
-                    </td>
-                    <td>
-                      <h6 class="text-muted">
-                        <i class="fas fa-circle text-success f-10 m-r-15"></i>
-                        {{ venta.fecha|date:"d M" }} {{ venta.hora|time:"H:i" }}
-                      </h6>
-                    </td>
-                    <td>
-                      <a href="#!" class="badge me-2 bg-danger text-white f-12">Eliminar</a>
-                      <a href="#!" class="badge me-2 bg-success text-white f-12">Ver</a>
-                    </td>
-                  </tr>
-                  {% empty %}
-                  <tr>
-                    <td colspan="4" class="text-center">No hay ventas recientes.</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-
+</div>
     </div>
     <!-- [ Main Content ] end -->
   </div>
 </div>
 
 {% endblock content %}
-
 {% block extra_js %}
 <script src="{% static "assets/js/plugins/apexcharts.min.js" %}"></script>
-
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     var options = {
@@ -277,14 +322,9 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         colors: ['#00E396'],
         plotOptions: {
-            bar: {
-                borderRadius: 4,
-                horizontal: false
-            }
+            bar: { borderRadius: 4, horizontal: false }
         },
-        dataLabels: {
-            enabled: true
-        }
+        dataLabels: { enabled: true }
     };
 
     var chart = new ApexCharts(document.querySelector("#stockChart"), options);

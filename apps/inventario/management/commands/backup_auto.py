@@ -24,6 +24,7 @@ MODELOS = [
     f"{APP_NAME}.Factura",
     f"{APP_NAME}.Notificacion",
     f"{APP_NAME}.Configuracion",
+    f"{APP_NAME}.Trabajo",
 ]
 
 class Command(BaseCommand):
