@@ -104,3 +104,13 @@
 [vie 03/10/2025 19:13:07,83] Creando superusuario admin_alex 
 [vie 03/10/2025 19:13:11,10] Superusuario admin_alex creado 
 [vie 03/10/2025 19:13:21,70] Servidor levantado manualmente 
+[s b 18/10/2025 17:43:21,42] Entorno virtual activado 
+[s b 18/10/2025 17:43:21,42] Instalando dependencias desde requirements.txt 
+[s b 18/10/2025 17:43:51,90] Servidor levantado manualmente 
+[s b 18/10/2025 17:44:11,41] Entorno virtual activado 
+[s b 18/10/2025 17:44:11,42] Instalando dependencias desde requirements.txt 
+[s b 18/10/2025 17:44:32,60] Iniciando migraciones 
+[s b 18/10/2025 17:44:41,15] Migraciones completadas 
+[s b 18/10/2025 17:45:35,59] Creando superusuario alex 
+[s b 18/10/2025 17:45:38,44] Superusuario alex creado 
+[s b 18/10/2025 17:45:44,96] Servidor levantado manualmente 
