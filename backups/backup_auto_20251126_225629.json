@@ -3,16 +3,16 @@
   "model": "auth.user",
   "pk": 1,
   "fields": {
-    "password": "pbkdf2_sha256$600000$ZGPQzwSbMg2pDQ57cO0t5N$iDomY1c7TOEiLffAUac0DRmVTC6Q+0Od/bqNQbBGzCM=",
-    "last_login": null,
+    "password": "pbkdf2_sha256$600000$aZwmvn7wB4q4Ls3jH6fivR$V7NA6LbAGD86PKHJQ0FYVvFQmkcAFKhX3ed7sKcbGCM=",
+    "last_login": "2025-11-27T02:48:18.387Z",
     "is_superuser": true,
-    "username": "admin_alex",
+    "username": "admin",
     "first_name": "",
     "last_name": "",
     "email": "admin@admin.com",
     "is_staff": true,
     "is_active": true,
-    "date_joined": "2025-10-03T23:13:09.601Z",
+    "date_joined": "2025-11-27T02:46:25.077Z",
     "groups": [],
     "user_permissions": []
   }
@@ -771,6 +771,153 @@
     "name": "Can view trabajo",
     "content_type": 21,
     "codename": "view_trabajo"
+  }
+},
+{
+  "model": "inventario.producto",
+  "pk": 1,
+  "fields": {
+    "nombre": "alex",
+    "descripcion": "asda",
+    "precio_venta": "660.00",
+    "precio_compra": "600.00",
+    "cantidad": 6,
+    "categoria": null,
+    "unidad_medida": "dasd",
+    "ganancia": "10.00"
+  }
+},
+{
+  "model": "inventario.producto",
+  "pk": 2,
+  "fields": {
+    "nombre": "asdasd",
+    "descripcion": "sdasd",
+    "precio_venta": "1600.00",
+    "precio_compra": "1000.00",
+    "cantidad": 5,
+    "categoria": null,
+    "unidad_medida": "asda",
+    "ganancia": "60.00"
+  }
+},
+{
+  "model": "inventario.compra",
+  "pk": 1,
+  "fields": {
+    "fecha": "2025-11-27",
+    "hora": "02:49:24",
+    "monto": "255.00",
+    "usuario": 1,
+    "proveedor": null
+  }
+},
+{
+  "model": "inventario.compra",
+  "pk": 2,
+  "fields": {
+    "fecha": "2025-11-27",
+    "hora": "02:49:59",
+    "monto": "60.00",
+    "usuario": 1,
+    "proveedor": null
+  }
+},
+{
+  "model": "inventario.compra",
+  "pk": 3,
+  "fields": {
+    "fecha": "2025-11-27",
+    "hora": "02:53:52",
+    "monto": "0.00",
+    "usuario": 1,
+    "proveedor": null
+  }
+},
+{
+  "model": "inventario.compra",
+  "pk": 4,
+  "fields": {
+    "fecha": "2025-11-27",
+    "hora": "02:54:16",
+    "monto": "0.00",
+    "usuario": 1,
+    "proveedor": null
+  }
+},
+{
+  "model": "inventario.compra",
+  "pk": 5,
+  "fields": {
+    "fecha": "2025-11-27",
+    "hora": "02:55:15",
+    "monto": "0.00",
+    "usuario": 1,
+    "proveedor": null
+  }
+},
+{
+  "model": "inventario.compra",
+  "pk": 6,
+  "fields": {
+    "fecha": "2025-11-27",
+    "hora": "02:55:24",
+    "monto": "300.00",
+    "usuario": 1,
+    "proveedor": null
+  }
+},
+{
+  "model": "inventario.compra",
+  "pk": 7,
+  "fields": {
+    "fecha": "2025-11-27",
+    "hora": "02:55:48",
+    "monto": "0.00",
+    "usuario": 1,
+    "proveedor": null
+  }
+},
+{
+  "model": "inventario.detallecompra",
+  "pk": 1,
+  "fields": {
+    "compra": 1,
+    "producto": 1,
+    "cantidad": 5,
+    "precio": "51.00"
+  }
+},
+{
+  "model": "inventario.detallecompra",
+  "pk": 2,
+  "fields": {
+    "compra": 2,
+    "producto": 1,
+    "cantidad": 1,
+    "precio": "60.00"
+  }
+},
+{
+  "model": "inventario.detallecompra",
+  "pk": 3,
+  "fields": {
+    "compra": 6,
+    "producto": 2,
+    "cantidad": 5,
+    "precio": "60.00"
+  }
+},
+{
+  "model": "inventario.venta",
+  "pk": 1,
+  "fields": {
+    "fecha": "2025-11-26",
+    "hora": "22:56:29.934",
+    "monto": "0.00",
+    "metodo_pago": "efectivo",
+    "usuario": 1,
+    "cliente": null
   }
 }
 ]

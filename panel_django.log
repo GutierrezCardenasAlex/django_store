@@ -114,3 +114,56 @@
 [s b 18/10/2025 17:45:35,59] Creando superusuario alex 
 [s b 18/10/2025 17:45:38,44] Superusuario alex creado 
 [s b 18/10/2025 17:45:44,96] Servidor levantado manualmente 
+[jue 06/11/2025 22:02:32,38] Entorno virtual activado 
+[jue 06/11/2025 22:02:32,38] Instalando dependencias desde requirements.txt 
+[jue 06/11/2025 22:03:04,42] Todo listo, arrancando servidor automÃ¡ticamente 
+[jue 06/11/2025 22:09:32,19] Entorno virtual activado 
+[jue 06/11/2025 22:09:32,19] Instalando dependencias desde requirements.txt 
+[jue 06/11/2025 22:10:23,74] ConfiguraciÃ³n completada, .env creado y carpetas listas 
+[jue 06/11/2025 22:10:31,55] Iniciando migraciones 
+[jue 06/11/2025 22:10:38,46] Migraciones completadas 
+[jue 06/11/2025 22:10:54,77] Creando superusuario alex 
+[jue 06/11/2025 22:10:57,33] Superusuario alex creado 
+[jue 06/11/2025 22:11:05,10] Servidor levantado manualmente 
+[jue 13/11/2025  9:52:41,46] Entorno virtual activado 
+[jue 13/11/2025  9:52:41,47] Instalando dependencias desde requirements.txt 
+[jue 13/11/2025  9:52:54,02] Todo listo, arrancando servidor automÃ¡ticamente 
+[jue 13/11/2025  9:52:54,02] Servidor detenido 
+[jue 13/11/2025  9:53:31,25] Salida del sistema 
+[jue 13/11/2025  9:53:35,34] Entorno virtual activado 
+[jue 13/11/2025  9:53:35,35] Instalando dependencias desde requirements.txt 
+[jue 13/11/2025  9:53:45,21] Todo listo, arrancando servidor automÃ¡ticamente 
+[jue 13/11/2025  9:53:45,21] Servidor detenido 
+[jue 13/11/2025  9:54:24,09] Entorno virtual activado 
+[jue 13/11/2025  9:54:24,09] Instalando dependencias desde requirements.txt 
+[jue 13/11/2025  9:59:28,51] ConfiguraciÃ³n completada, .env creado y carpetas listas 
+[jue 13/11/2025  9:59:39,37] Iniciando migraciones 
+[jue 13/11/2025  9:59:46,32] Migraciones completadas 
+[jue 13/11/2025 10:01:15,06] Creando superusuario admin 
+[jue 13/11/2025 10:01:17,66] Superusuario admin creado 
+[mar 18/11/2025 17:53:07,28] Entorno virtual activado 
+[mar 18/11/2025 17:53:07,29] Instalando dependencias desde requirements.txt 
+[mar 18/11/2025 17:53:36,02] Servidor levantado manualmente 
+[mar 18/11/2025 17:54:59,48] Entorno virtual activado 
+[mar 18/11/2025 17:54:59,49] Instalando dependencias desde requirements.txt 
+[mar 18/11/2025 17:55:41,95] Creando superusuario admin 
+[mar 18/11/2025 17:55:44,11] Superusuario admin creado 
+[mar 18/11/2025 17:56:05,29] Creando superusuario admin12 
+[mar 18/11/2025 17:56:08,61] Superusuario admin12 creado 
+[mar 18/11/2025 17:56:23,93] Servidor levantado manualmente 
+[mi‚ 26/11/2025 22:44:48,39] Entorno virtual activado 
+[mi‚ 26/11/2025 22:44:48,40] Instalando dependencias desde requirements.txt 
+[mi‚ 26/11/2025 22:45:40,14] ConfiguraciÃ³n completada, .env creado y carpetas listas 
+[mi‚ 26/11/2025 22:45:52,16] Iniciando migraciones 
+[mi‚ 26/11/2025 22:46:01,28] Migraciones completadas 
+[mi‚ 26/11/2025 22:46:23,31] Creando superusuario admin 
+[mi‚ 26/11/2025 22:46:26,49] Superusuario admin creado 
+[mi‚ 26/11/2025 22:46:36,90] Servidor levantado manualmente 
+[mi‚ 26/11/2025 23:53:06,99] Entorno virtual activado 
+[mi‚ 26/11/2025 23:53:06,99] Instalando dependencias desde requirements.txt 
+[mi‚ 26/11/2025 23:53:16,84] ERROR - ConfiguraciÃ³n incompleta 
+[mi‚ 26/11/2025 23:53:26,54] Salida del sistema 
+[mi‚ 26/11/2025 23:53:34,11] Entorno virtual activado 
+[mi‚ 26/11/2025 23:53:34,11] Instalando dependencias desde requirements.txt 
+[mi‚ 26/11/2025 23:53:43,19] ERROR - ConfiguraciÃ³n incompleta 
+[mi‚ 26/11/2025 23:53:47,36] Salida del sistema 

@@ -3,70 +3,16 @@
   "model": "auth.user",
   "pk": 1,
   "fields": {
-    "password": "pbkdf2_sha256$600000$ijxomkP9T6Hi1SAlOTQULf$YRtd6r9JD/qUYif9MJRqF3DRtlbPQ+73o8qSDSzUXs8=",
-    "last_login": "2025-09-27T16:04:52.879Z",
+    "password": "pbkdf2_sha256$600000$aZwmvn7wB4q4Ls3jH6fivR$V7NA6LbAGD86PKHJQ0FYVvFQmkcAFKhX3ed7sKcbGCM=",
+    "last_login": "2025-11-27T02:48:18.387Z",
     "is_superuser": true,
-    "username": "admin_alex",
+    "username": "admin",
     "first_name": "",
     "last_name": "",
-    "email": "admin@gmail.com",
+    "email": "admin@admin.com",
     "is_staff": true,
     "is_active": true,
-    "date_joined": "2025-09-26T16:01:03.702Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 2,
-  "fields": {
-    "password": "pbkdf2_sha256$600000$YjVeBhUNVLaE5Cuxq43JOy$SZ1TsSlhuv3YgboH8f0vWXLo/UV24CpaJTdtW4WFw7Y=",
-    "last_login": "2025-09-27T14:52:18.085Z",
-    "is_superuser": false,
-    "username": "alex",
-    "first_name": "",
-    "last_name": "",
-    "email": "",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2025-09-26T16:02:53Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 3,
-  "fields": {
-    "password": "pbkdf2_sha256$600000$bkqMKwT81XY3iIZN6zg3xU$EdDmdEz4BN2LANQdB6J0OIlPRUDF9w3n/LF6g6mWZww=",
-    "last_login": null,
-    "is_superuser": false,
-    "username": "juanita",
-    "first_name": "",
-    "last_name": "",
-    "email": "",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2025-09-27T16:15:55Z",
-    "groups": [],
-    "user_permissions": []
-  }
-},
-{
-  "model": "auth.user",
-  "pk": 4,
-  "fields": {
-    "password": "pbkdf2_sha256$600000$OoW4iRv0auGlmjVkm7fyQW$mR/Mjc40adsydiKDMwqTmZj7+ibE9Nmti5rFkfkcLBM=",
-    "last_login": null,
-    "is_superuser": false,
-    "username": "madelen",
-    "first_name": "",
-    "last_name": "",
-    "email": "",
-    "is_staff": false,
-    "is_active": true,
-    "date_joined": "2025-09-27T16:25:06Z",
+    "date_joined": "2025-11-27T02:46:25.077Z",
     "groups": [],
     "user_permissions": []
   }
@@ -828,114 +774,27 @@
   }
 },
 {
-  "model": "inventario.cliente",
+  "model": "inventario.producto",
   "pk": 1,
   "fields": {
     "nombre": "alex",
-    "apellido": "gutierrez",
-    "nit_ci": "10529221",
-    "direccion": "Villa Amanecer Sin Denominación",
-    "telefono": "78629664",
-    "email": "gutierrezcardenasalex@gmail.com"
-  }
-},
-{
-  "model": "inventario.cliente",
-  "pk": 2,
-  "fields": {
-    "nombre": "maily",
-    "apellido": "aleman",
-    "nit_ci": "661051561",
-    "direccion": "calle sucre",
-    "telefono": "66999889",
-    "email": "maily@gmail.com"
-  }
-},
-{
-  "model": "inventario.proveedor",
-  "pk": 1,
-  "fields": {
-    "nombre": "juan beltran",
-    "contacto": "78629646",
-    "direccion": "vill",
-    "telefono": "794644894",
-    "email": null
-  }
-},
-{
-  "model": "inventario.categoria",
-  "pk": 1,
-  "fields": {
-    "nombre": "laptos",
-    "descripcion": "comida"
-  }
-},
-{
-  "model": "inventario.categoria",
-  "pk": 2,
-  "fields": {
-    "nombre": "comida",
-    "descripcion": ""
-  }
-},
-{
-  "model": "inventario.categoria",
-  "pk": 3,
-  "fields": {
-    "nombre": "celulares",
-    "descripcion": "tecnologia"
-  }
-},
-{
-  "model": "inventario.producto",
-  "pk": 1,
-  "fields": {
-    "nombre": "iphone 14 pro max",
-    "descripcion": "ultima gama",
-    "precio_venta": "750.00",
-    "precio_compra": "500.00",
-    "cantidad": 12,
-    "categoria": 3,
-    "unidad_medida": "tecnologica",
-    "ganancia": "50.00"
-  }
-},
-{
-  "model": "inventario.producto",
-  "pk": 2,
-  "fields": {
-    "nombre": "iphone 17 pro max",
-    "descripcion": "cell",
-    "precio_venta": "1200.00",
-    "precio_compra": "1000.00",
-    "cantidad": 16,
-    "categoria": 3,
-    "unidad_medida": "casc",
+    "descripcion": "asda",
+    "precio_venta": "72.00",
+    "precio_compra": "60.00",
+    "cantidad": 5,
+    "categoria": null,
+    "unidad_medida": "dasd",
     "ganancia": "20.00"
   }
 },
 {
-  "model": "inventario.producto",
-  "pk": 3,
-  "fields": {
-    "nombre": "alex",
-    "descripcion": "jejej",
-    "precio_venta": "300.00",
-    "precio_compra": "200.00",
-    "cantidad": 40,
-    "categoria": 2,
-    "unidad_medida": "metros",
-    "ganancia": "50.00"
-  }
-},
-{
   "model": "inventario.compra",
   "pk": 1,
   "fields": {
-    "fecha": "2025-09-26",
-    "hora": "16:05:15",
-    "monto": "10000.00",
-    "usuario": 2,
+    "fecha": "2025-11-27",
+    "hora": "02:49:24",
+    "monto": "255.00",
+    "usuario": 1,
     "proveedor": null
   }
 },
@@ -943,119 +802,9 @@
   "model": "inventario.compra",
   "pk": 2,
   "fields": {
-    "fecha": "2025-09-26",
-    "hora": "16:15:35",
-    "monto": "10000.00",
-    "usuario": 2,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 3,
-  "fields": {
-    "fecha": "2025-09-26",
-    "hora": "16:18:01",
-    "monto": "10000.00",
-    "usuario": 2,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 4,
-  "fields": {
-    "fecha": "2025-10-01",
-    "hora": "16:32:12",
-    "monto": "1000.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 5,
-  "fields": {
-    "fecha": "2025-10-02",
-    "hora": "02:50:31",
-    "monto": "500.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 6,
-  "fields": {
-    "fecha": "2025-10-02",
-    "hora": "02:55:12",
-    "monto": "500.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 7,
-  "fields": {
-    "fecha": "2025-10-02",
-    "hora": "03:00:35",
-    "monto": "500.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 8,
-  "fields": {
-    "fecha": "2025-10-02",
-    "hora": "03:01:55",
-    "monto": "500.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 9,
-  "fields": {
-    "fecha": "2025-10-02",
-    "hora": "03:07:53",
-    "monto": "10000.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 10,
-  "fields": {
-    "fecha": "2025-10-02",
-    "hora": "03:11:00",
-    "monto": "5000.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 11,
-  "fields": {
-    "fecha": "2025-10-03",
-    "hora": "03:21:38",
-    "monto": "100.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 12,
-  "fields": {
-    "fecha": "2025-10-03",
-    "hora": "03:22:20",
-    "monto": "1000.00",
+    "fecha": "2025-11-27",
+    "hora": "02:49:59",
+    "monto": "60.00",
     "usuario": 1,
     "proveedor": null
   }
@@ -1066,290 +815,8 @@
   "fields": {
     "compra": 1,
     "producto": 1,
-    "cantidad": 10,
-    "precio": "1000.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 2,
-  "fields": {
-    "compra": 2,
-    "producto": 2,
     "cantidad": 5,
-    "precio": "2000.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 3,
-  "fields": {
-    "compra": 3,
-    "producto": 2,
-    "cantidad": 5,
-    "precio": "2000.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 4,
-  "fields": {
-    "compra": 4,
-    "producto": 3,
-    "cantidad": 10,
-    "precio": "100.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 5,
-  "fields": {
-    "compra": 5,
-    "producto": 3,
-    "cantidad": 5,
-    "precio": "100.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 6,
-  "fields": {
-    "compra": 6,
-    "producto": 3,
-    "cantidad": 5,
-    "precio": "100.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 7,
-  "fields": {
-    "compra": 7,
-    "producto": 3,
-    "cantidad": 5,
-    "precio": "100.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 8,
-  "fields": {
-    "compra": 8,
-    "producto": 3,
-    "cantidad": 5,
-    "precio": "100.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 9,
-  "fields": {
-    "compra": 9,
-    "producto": 2,
-    "cantidad": 10,
-    "precio": "1000.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 10,
-  "fields": {
-    "compra": 10,
-    "producto": 1,
-    "cantidad": 10,
-    "precio": "500.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 11,
-  "fields": {
-    "compra": 11,
-    "producto": 3,
-    "cantidad": 5,
-    "precio": "20.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 12,
-  "fields": {
-    "compra": 12,
-    "producto": 3,
-    "cantidad": 5,
-    "precio": "200.00"
-  }
-},
-{
-  "model": "inventario.venta",
-  "pk": 1,
-  "fields": {
-    "fecha": "2025-09-26",
-    "hora": "12:06:58.975",
-    "monto": "2400.00",
-    "metodo_pago": "efectivo",
-    "usuario": 2,
-    "cliente": 1
-  }
-},
-{
-  "model": "inventario.venta",
-  "pk": 2,
-  "fields": {
-    "fecha": "2025-09-26",
-    "hora": "12:07:19.674",
-    "monto": "2400.00",
-    "metodo_pago": "efectivo",
-    "usuario": 2,
-    "cliente": 1
-  }
-},
-{
-  "model": "inventario.venta",
-  "pk": 3,
-  "fields": {
-    "fecha": "2025-09-27",
-    "hora": "12:28:04.399",
-    "monto": "7200.00",
-    "metodo_pago": "efectivo",
-    "usuario": 1,
-    "cliente": 1
-  }
-},
-{
-  "model": "inventario.venta",
-  "pk": 4,
-  "fields": {
-    "fecha": "2025-10-01",
-    "hora": "23:24:04.199",
-    "monto": "750.00",
-    "metodo_pago": "efectivo",
-    "usuario": 1,
-    "cliente": 1
-  }
-},
-{
-  "model": "inventario.venta",
-  "pk": 5,
-  "fields": {
-    "fecha": "2025-10-01",
-    "hora": "23:43:57.499",
-    "monto": "1190.00",
-    "metodo_pago": "efectivo",
-    "usuario": 1,
-    "cliente": null
-  }
-},
-{
-  "model": "inventario.venta",
-  "pk": 6,
-  "fields": {
-    "fecha": "2025-10-02",
-    "hora": "23:20:31.710",
-    "monto": "1900.00",
-    "metodo_pago": "efectivo",
-    "usuario": 1,
-    "cliente": null
-  }
-},
-{
-  "model": "inventario.venta",
-  "pk": 7,
-  "fields": {
-    "fecha": "2025-10-03",
-    "hora": "11:31:46.610",
-    "monto": "0.00",
-    "metodo_pago": "efectivo",
-    "usuario": 1,
-    "cliente": 2
-  }
-},
-{
-  "model": "inventario.detalleventa",
-  "pk": 1,
-  "fields": {
-    "venta": 1,
-    "producto": 1,
-    "cantidad": 2,
-    "descuento": "0.00",
-    "precio_unitario": "1200.00"
-  }
-},
-{
-  "model": "inventario.detalleventa",
-  "pk": 2,
-  "fields": {
-    "venta": 2,
-    "producto": 1,
-    "cantidad": 2,
-    "descuento": "0.00",
-    "precio_unitario": "1200.00"
-  }
-},
-{
-  "model": "inventario.detalleventa",
-  "pk": 3,
-  "fields": {
-    "venta": 3,
-    "producto": 1,
-    "cantidad": 2,
-    "descuento": "0.00",
-    "precio_unitario": "1200.00"
-  }
-},
-{
-  "model": "inventario.detalleventa",
-  "pk": 4,
-  "fields": {
-    "venta": 3,
-    "producto": 2,
-    "cantidad": 2,
-    "descuento": "0.00",
-    "precio_unitario": "2400.00"
-  }
-},
-{
-  "model": "inventario.detalleventa",
-  "pk": 5,
-  "fields": {
-    "venta": 4,
-    "producto": 1,
-    "cantidad": 1,
-    "descuento": "0.00",
-    "precio_unitario": "750.00"
-  }
-},
-{
-  "model": "inventario.detalleventa",
-  "pk": 6,
-  "fields": {
-    "venta": 5,
-    "producto": 2,
-    "cantidad": 1,
-    "descuento": "10.00",
-    "precio_unitario": "1200.00"
-  }
-},
-{
-  "model": "inventario.detalleventa",
-  "pk": 7,
-  "fields": {
-    "venta": 6,
-    "producto": 1,
-    "cantidad": 1,
-    "descuento": "20.00",
-    "precio_unitario": "750.00"
-  }
-},
-{
-  "model": "inventario.detalleventa",
-  "pk": 8,
-  "fields": {
-    "venta": 6,
-    "producto": 2,
-    "cantidad": 1,
-    "descuento": "30.00",
-    "precio_unitario": "1200.00"
+    "precio": "51.00"
   }
 }
 ]

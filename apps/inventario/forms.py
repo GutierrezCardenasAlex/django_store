@@ -155,7 +155,7 @@ class ConfiguracionForm(forms.ModelForm):
 from django import forms
 
 class CompraProductoExistenteForm(forms.Form):
-    cantidad = forms.IntegerField(min_value=1, label='Cantidad a comprar')
+    cantidad = forms.IntegerField(min_value=1, label='Comprar o solo actualizar',required=False)
     ganancia = forms.DecimalField(
         min_value=0,
         decimal_places=2,

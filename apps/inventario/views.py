@@ -355,24 +355,24 @@ def comprar_producto_existente(request, id):
             return render(request, 'error.html', {'mensaje': 'No hay configuración cargada.'})
 
         if compra_form.is_valid() and producto_form.is_valid():
-            cantidad = producto_form.cleaned_data['cantidad']
+
+            # Cantidad puede venir vacía → quedará como None
+            cantidad = producto_form.cleaned_data.get('cantidad')
             precio_compra = producto_form.cleaned_data['precio_compra']
             ganancia = producto_form.cleaned_data['ganancia']
 
-            # Actualizar cantidad y precio del producto
-            producto.cantidad += cantidad
+            # Actualizar precio y ganancia del producto SIEMPRE
             producto.ganancia = ganancia
-
             producto.precio_compra = precio_compra
             producto.precio_venta = precio_compra + (precio_compra * ganancia / Decimal('100'))
-                
-
             producto.save()
 
             # Crear la compra
             compra = compra_form.save(commit=False)
             compra.usuario = request.user
-            compra.monto = precio_compra * cantidad
+
+            # Si cantidad es None → monto debe ser 0
+            compra.monto = (precio_compra * cantidad) if cantidad else 0
 
             incluir_proveedor = compra_form.cleaned_data.get('incluir_proveedor')
             if not incluir_proveedor:
@@ -380,15 +380,22 @@ def comprar_producto_existente(request, id):
 
             compra.save()
 
-            # Crear detalle de compra
-            DetalleCompra.objects.create(
-                compra=compra,
-                producto=producto,
-                cantidad=cantidad,
-                precio=precio_compra
-            )
+            # SOLO modificar stock y crear detalle si hay cantidad
+            if cantidad:
+                # Actualizar stock
+                producto.cantidad += cantidad
+                producto.save()
+
+                # Crear detalle de compra
+                DetalleCompra.objects.create(
+                    compra=compra,
+                    producto=producto,
+                    cantidad=cantidad,
+                    precio=precio_compra
+                )
 
             return redirect('lista_productos')
+
 
     else:
         compra_form = CompraForm(initial={
