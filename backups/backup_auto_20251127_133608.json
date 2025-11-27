@@ -3,16 +3,16 @@
   "model": "auth.user",
   "pk": 1,
   "fields": {
-    "password": "pbkdf2_sha256$600000$aZwmvn7wB4q4Ls3jH6fivR$V7NA6LbAGD86PKHJQ0FYVvFQmkcAFKhX3ed7sKcbGCM=",
-    "last_login": "2025-11-27T02:48:18.387Z",
+    "password": "pbkdf2_sha256$600000$dEaw8jsrOK2DdbgPJkRei1$vfDFZX4SaP0g9Tma/c4t+mbQHOA6oAkCuti+8E8lm64=",
+    "last_login": "2025-11-27T17:35:18.058Z",
     "is_superuser": true,
-    "username": "admin",
+    "username": "admin1",
     "first_name": "",
     "last_name": "",
     "email": "admin@admin.com",
     "is_staff": true,
     "is_active": true,
-    "date_joined": "2025-11-27T02:46:25.077Z",
+    "date_joined": "2025-11-27T17:33:52.779Z",
     "groups": [],
     "user_permissions": []
   }
@@ -777,27 +777,13 @@
   "model": "inventario.producto",
   "pk": 1,
   "fields": {
-    "nombre": "alex",
-    "descripcion": "asda",
-    "precio_venta": "660.00",
-    "precio_compra": "600.00",
-    "cantidad": 6,
+    "nombre": "iphone",
+    "descripcion": "comoms",
+    "precio_venta": "16000.00",
+    "precio_compra": "10000.00",
+    "cantidad": 60,
     "categoria": null,
-    "unidad_medida": "dasd",
-    "ganancia": "10.00"
-  }
-},
-{
-  "model": "inventario.producto",
-  "pk": 2,
-  "fields": {
-    "nombre": "asdasd",
-    "descripcion": "sdasd",
-    "precio_venta": "96.00",
-    "precio_compra": "60.00",
-    "cantidad": 5,
-    "categoria": null,
-    "unidad_medida": "asda",
+    "unidad_medida": "info",
     "ganancia": "60.00"
   }
 },
@@ -806,85 +792,10 @@
   "pk": 1,
   "fields": {
     "fecha": "2025-11-27",
-    "hora": "02:49:24",
-    "monto": "255.00",
+    "hora": "17:35:48",
+    "monto": "600000.00",
     "usuario": 1,
     "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 2,
-  "fields": {
-    "fecha": "2025-11-27",
-    "hora": "02:49:59",
-    "monto": "60.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 3,
-  "fields": {
-    "fecha": "2025-11-27",
-    "hora": "02:53:52",
-    "monto": "0.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 4,
-  "fields": {
-    "fecha": "2025-11-27",
-    "hora": "02:54:16",
-    "monto": "0.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 5,
-  "fields": {
-    "fecha": "2025-11-27",
-    "hora": "02:55:15",
-    "monto": "0.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.compra",
-  "pk": 6,
-  "fields": {
-    "fecha": "2025-11-27",
-    "hora": "02:55:24",
-    "monto": "300.00",
-    "usuario": 1,
-    "proveedor": null
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 1,
-  "fields": {
-    "compra": 1,
-    "producto": 1,
-    "cantidad": 5,
-    "precio": "51.00"
-  }
-},
-{
-  "model": "inventario.detallecompra",
-  "pk": 2,
-  "fields": {
-    "compra": 2,
-    "producto": 1,
-    "cantidad": 1,
-    "precio": "60.00"
   }
 }
 ]
